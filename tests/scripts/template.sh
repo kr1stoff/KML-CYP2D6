@@ -22,20 +22,24 @@ samtools bedcov -c \
     /data/mengxf/Project/KML250707-cyp2d6-igtk/target/probeCov.gene.bed \
     $OUTDIR/$NAME.sorted.bam \
     >$OUTDIR/$NAME.sorted.bam.bedcov
-# CYP2D6 & CYP2D7 & CYP2D8P 区域 base 数统计
-samtools bedcov -c \
-    /data/mengxf/Project/KML250707-cyp2d6-igtk/target/CYP2D6-7-8P.bed \
-    $OUTDIR/$NAME.sorted.bam \
-    >$OUTDIR/$NAME.sorted.bam.bedcov.cyp2d678p
-# bed 区域内的各个位置 base 数统计
-samtools depth \
-    -b /data/mengxf/Project/KML250707-cyp2d6-igtk/target/probeCov.gene.bed \
-    $OUTDIR/$NAME.sorted.bam \
-    >$OUTDIR/$NAME.sorted.bam.depth
-# 所有比对位置 depth 统计
-samtools depth \
-    $OUTDIR/$NAME.sorted.bam \
-    >$OUTDIR/$NAME.sorted.bam.all.depth
+
+# # CYP2D6 & CYP2D7 & CYP2D8P 区域 base 数统计
+# samtools bedcov -c \
+#     /data/mengxf/Project/KML250707-cyp2d6-igtk/target/CYP2D6-7-8P.bed \
+#     $OUTDIR/$NAME.sorted.bam \
+#     >$OUTDIR/$NAME.sorted.bam.bedcov.cyp2d678p
+
+# # bed 区域内的各个位置 base 数统计
+# samtools depth \
+#     -b /data/mengxf/Project/KML250707-cyp2d6-igtk/target/probeCov.gene.bed \
+#     $OUTDIR/$NAME.sorted.bam \
+#     >$OUTDIR/$NAME.sorted.bam.depth
+
+# # 所有比对位置 depth 统计
+# samtools depth \
+#     $OUTDIR/$NAME.sorted.bam \
+#     >$OUTDIR/$NAME.sorted.bam.all.depth
+
 # 比对统计
 samtools stat $OUTDIR/$NAME.sorted.bam | grep ^SN | cut -f 2- >$OUTDIR/$NAME.sorted.bam.stat
 

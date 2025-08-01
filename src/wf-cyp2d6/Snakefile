@@ -1,0 +1,18 @@
+workdir: config["workdir"]
+
+
+shell.executable("/bin/bash")
+shell.prefix("set +eu; ")
+
+
+rule all:
+    input:
+        "multiqc",
+        "panel-qc-summary.xlsx",
+
+
+include: "rules/prepare_ref.smk"
+include: "rules/fastqc.smk"
+include: "rules/fastp.smk"
+include: "rules/map.smk"
+include: "rules/all_summary.smk"
