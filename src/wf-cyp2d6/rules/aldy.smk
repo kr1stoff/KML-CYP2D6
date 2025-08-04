@@ -11,6 +11,8 @@ rule run_aldy:
         config["conda"]["aldy"]
     params:
         "--profile pgx1 --gene cyp2d6",
+    resources:
+        parallel_tasks=2,
     shell:
         "aldy genotype {params} {input} --output {output} --log {log}"
 

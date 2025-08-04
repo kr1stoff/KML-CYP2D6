@@ -19,6 +19,8 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 def main(input_tab, output_dir, reference, bed, threads):
     """KML Panel 快速质量评估流程"""
     logging.info("开始 KML Panel 快速质量评估流程")
+    reference = str(Path(reference).resolve())
+    bed = str(Path(bed).resolve())
     output_dir = Path(output_dir).resolve()
     # fastq
     prepare_fastq_by_samptab(output_dir, input_tab, threads)

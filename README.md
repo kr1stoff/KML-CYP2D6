@@ -8,9 +8,9 @@ CYP2D6 分析流程
 
   ```bash
     poetry run python -m src.kml_cyp2d6 \
-      --input-tab src/template/input.tsv \
+      --input-tab template/input.tsv \
       --output-dir /data/mengxf/Project/KML250731-cyp2d6-pipeline/results/250731 \
       --reference /data/mengxf/Database/reference/hg38/hg38.fa \
-      --bed src/template/probeCov.gene.bed \
+      --bed assets/probeCov.gene.bed \
       --threads 32
   ```
