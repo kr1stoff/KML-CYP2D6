@@ -3,8 +3,8 @@ rule all_summary:
         rules.fq_stats_summary.output,
         rules.bam_stats_summary.output,
     output:
-        "panel-qc-summary.tsv",
-        "panel-qc-summary.xlsx",
+        "qc/panel-qc-summary.tsv",
+        "qc/panel-qc-summary.xlsx",
     benchmark:
         ".log/all_summary.bm"
     log:

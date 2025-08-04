@@ -4,7 +4,7 @@ from subprocess import run
 import logging
 
 from src.kml_cyp2d6.fastq import get_sample_names_by_samptab
-from src.kml_cyp2d6.config import get_thread_dict
+from src.kml_cyp2d6.config import get_thread_dict, get_asset_dict
 from src.config.env import CONDA_ENV_DICT
 from src.config.software import ACTIVATE
 
@@ -22,6 +22,7 @@ def create_snakemake_configfile(input_tab: str, workdir: Path, threads: int, ref
         'conda': CONDA_ENV_DICT,
         'reference': reference,
         'bed': bed,
+        'assets': get_asset_dict(),
     }
     configfile = f'{workdir}/.temp/snakemake.yaml'
     with open(configfile, 'w') as f:

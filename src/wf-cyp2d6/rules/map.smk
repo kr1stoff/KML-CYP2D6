@@ -19,6 +19,7 @@ rule bwa_mem:
         bwa mem -t {threads} {params.bwa} {config[reference]} {input} 2> {log} | \
             samtools view -@ {threads} {params.view} - 2>> {log} | \
             samtools sort -@ {threads} -o {output} - 2>> {log}
+        samtools index {output} 2>> {log}
         """
 
 
@@ -89,3 +90,19 @@ rule bam_stats_summary:
         config["conda"]["python"]
     script:
         "../scripts/bam_stats_summary.py"
+
+
+rule samtools_bedcov:
+    input:
+        rules.bwa_mem.output,
+        rules.bedtools_sort.output,
+    output:
+        "align/{sample}.bam.target.bedcov",
+    benchmark:
+        ".log/align/{sample}.samtools_bedcov.bm"
+    log:
+        ".log/align/{sample}.samtools_bedcov.log",
+    conda:
+        config["conda"]["basic"]
+    shell:
+        "samtools bedcov -c {input[1]} {input[0]} > {output} 2> {log}"
