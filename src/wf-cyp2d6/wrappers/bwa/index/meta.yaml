@@ -1,0 +1,14 @@
+name: "bwa index"
+description: Creates a BWA index.
+url: https://github.com/lh3/bwa
+authors:
+  - Patrik Smeds
+  - Filipe G. Vieira
+input:
+  - fasta file
+output:
+  - BWA index files
+params:
+  - extra: aditional program arguments
+notes: |
+  * Wrapper automatically calculates `block_size`.

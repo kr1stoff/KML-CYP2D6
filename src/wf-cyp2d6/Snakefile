@@ -2,7 +2,7 @@ workdir: config["workdir"]
 
 
 shell.executable("/bin/bash")
-shell.prefix("set +eu; ")
+shell.prefix("set +eu;")
 
 
 rule all:
@@ -10,13 +10,10 @@ rule all:
         "multiqc",
         "qc/panel-qc-summary.xlsx",
         expand("align/{sample}.bam.target.bedcov", sample=config["samples"]),
-        "aldy/all-sample-snp.xlsx",
-        "aldy/all-sample-genotype.xlsx",
 
 
-include: "rules/prepare_ref.smk"
+include: "rules/bed.smk"
 include: "rules/fastqc.smk"
 include: "rules/fastp.smk"
 include: "rules/map.smk"
-include: "rules/all_summary.smk"
-include: "rules/aldy.smk"
+include: "rules/summary.smk"

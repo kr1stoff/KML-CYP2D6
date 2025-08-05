@@ -8,8 +8,9 @@ def get_bam_stat_dict(bam_stat_file) -> dict:
     bam_stat_dict = {}
     with open(bam_stat_file, 'r') as f:
         for line in f:
-            lns = line.split('#')[0].strip().split(':\t')
-            bam_stat_dict[lns[0]] = lns[1]
+            if line.startswith('SN'):
+                lns = line.split('#')[0].strip().split('\t')
+                bam_stat_dict[lns[1].replace(':', '')] = lns[2]
     return bam_stat_dict
 
 
@@ -47,5 +48,5 @@ outputs = [mapped_reads, mapped_rate, ontarget_reads, ontarget_rate, target_size
            cover4x_rate, cover10x_rate, cover30x_rate, cover50x_rate, cover100x_rate, mean_depth, depth_20_rate, depth_50_rate]
 outputs = [o if type(o) == int else round(o, 4) for o in outputs]
 df = pd.DataFrame([outputs], columns=['MappedReads', 'MappedRate', 'OnTargetReads', 'OnTargetRate', 'TargetSize', 'TargetCoveredSize', 'CoverageRate',
-                  '4xCoverageRate', '10xCoverageRate', '30xCoverageRate', '50xCoverageRate', '100xCoverageRate', 'MeanDepth', '20xDepthRate', '50xDepthRate'])
+                  '4xCoverageRate', '10xCoverageRate', '30xCoverageRate', '50xCoverageRate', '100xCoverageRate', 'MeanDepth', '20%MeanDepthRate', '50%MeanDepthRate'])
 df.to_csv(snakemake.output[0], index=False)

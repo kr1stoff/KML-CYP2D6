@@ -1,21 +1,24 @@
 rule fastp_pe:
     input:
-        ".rawdata/{sample}_1.fastq.gz",
-        ".rawdata/{sample}_2.fastq.gz",
+        sample=[
+            ".rawdata/{sample}_1.fastq.gz",
+            ".rawdata/{sample}_2.fastq.gz",
+        ],
     output:
-        j="fastp/{sample}.json",
-        h="fastp/{sample}.html",
-        o="fastp/{sample}.1.fastq.gz",
-        O="fastp/{sample}.2.fastq.gz",
+        trimmed=["fastp/{sample}.1.fastq", "fastp/{sample}.2.fastq"],
+        html="fastp/{sample}.html",
+        json="fastp/{sample}.json",
+    log:
+        ".logs/fastp/{sample}.fastp_pe.log",
     benchmark:
         ".log/fastp/{sample}.fastp_pe.bm"
-    log:
-        ".log/fastp/{sample}.fastp_pe.log",
     conda:
         config["conda"]["basic2"]
     threads: config["threads"]["low"]
-    shell:
-        "fastp -w {threads} -j {output.j} -h {output.h} -o {output.o} -O {output.O} -i {input[0]} -I {input[1]} &> {log}"
+    params:
+        extra="-q 15 -u 40 -l 15 --cut_right --cut_window_size 4 --cut_mean_quality 20 --correction",
+    wrapper:
+        f"file:{workflow.basedir}/wrappers/fastp"
 
 
 rule fq_stats_summary:

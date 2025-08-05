@@ -1,0 +1,13 @@
+name: "bwa sam(se/pe)"
+description: Map paired-end reads with either bwa samse or sampe.
+authors:
+  - Filipe G. Vieira
+input:
+  - fastq: FASTQ file(s)
+  - sai: SAI file(s)
+  - idx: BWA reference genome index
+output:
+  - SAM/BAM alignment file
+notes: |
+  * The `extra` param allows for additional program arguments.
+  * For more information see, http://bio-bwa.sourceforge.net/bwa.shtml

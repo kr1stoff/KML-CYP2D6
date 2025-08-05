@@ -1,7 +1,10 @@
 rule bwa_mem:
     input:
-        ".rawdata/{sample}_1.fastq.gz",
-        ".rawdata/{sample}_2.fastq.gz",
+        reads=[
+            ".rawdata/{sample}_1.fastq.gz",
+            ".rawdata/{sample}_2.fastq.gz",
+        ],
+        idx=multiext(config["reference"], ".amb", ".ann", ".bwt", ".pac", ".sa"),
     output:
         "align/{sample}.bam",
     benchmark:
@@ -11,43 +14,68 @@ rule bwa_mem:
     conda:
         config["conda"]["basic"]
     params:
-        bwa="-M -Y -R '@RG\\tID:{sample}\\tSM:{sample}'",
-        view="-hbS",
+        extra=r"-M -Y -R '@RG\tID:{sample}\tSM:{sample}'",
+        sorting="samtools",  # Can be 'none', 'samtools' or 'picard'.
+        sort_order="coordinate",  # Can be 'queryname' or 'coordinate'.
+        sort_extra="",  # Extra args for samtools/picard.
+        tmp_dir="/tmp/",  # Path to temp dir. (optional)
     threads: config["threads"]["high"]
-    shell:
-        """
-        bwa mem -t {threads} {params.bwa} {config[reference]} {input} 2> {log} | \
-            samtools view -@ {threads} {params.view} - 2>> {log} | \
-            samtools sort -@ {threads} -o {output} - 2>> {log}
-        samtools index {output} 2>> {log}
-        """
+    wrapper:
+        f"file:{workflow.basedir}/wrappers/bwa/mem"
 
 
-rule samtools_stat:
+rule samtools_index:
     input:
         rules.bwa_mem.output,
-        rules.bedtools_sort.output,
     output:
-        all_stat="align/{sample}.bam.stat",
-        target_stat="align/{sample}.bam.target.stat",
+        "align/{sample}.bam.bai",
     benchmark:
-        ".log/align/{sample}.samtools_stat.bm"
+        ".log/align/{sample}.samtools_index.bm"
     log:
-        ".log/align/{sample}.samtools_stat.log",
+        ".log/align/{sample}.samtools_index.log",
+    params:
+        extra="",  # optional params string
+    threads: config["threads"]["low"]  # This value - 1 will be sent to -@
+    conda:
+        config["conda"]["basic"]
+    wrapper:
+        f"file:{workflow.basedir}/wrappers/samtools/index"
+
+
+rule samtools_stats:
+    input:
+        bam=rules.bwa_mem.output,
+        bed=rules.bedtools_sort.output,  # Optional input, specify target regions
+    output:
+        "align/{sample}.bam.target.stat",
+    benchmark:
+        ".log/align/{sample}.samtools_stats.bm"
+    log:
+        ".log/align/{sample}.samtools_stats.log",
     conda:
         config["conda"]["basic"]
     threads: config["threads"]["low"]
-    shell:
-        """
-        samtools stat {input[0]} | grep ^SN | cut -f 2- > {output.all_stat} 2> {log}
-        samtools stat -t {input[1]} {input[0]} | grep ^SN | cut -f 2- > {output.target_stat} 2>> {log}
-        """
+    wrapper:
+        f"file:{workflow.basedir}/wrappers/samtools/stats"
+
+
+use rule samtools_stats as samtools_stats_all with:
+    input:
+        rules.bwa_mem.output,
+    output:
+        "align/{sample}.bam.stat",
+    benchmark:
+        ".log/align/{sample}.samtools_stats_all.bm"
+    log:
+        ".log/align/{sample}.samtools_stats_all.log",
 
 
 rule samtools_depth:
     input:
-        rules.bwa_mem.output,
-        ".temp/target.sorted.bed",
+        bams=[
+            rules.bwa_mem.output,
+        ],
+        bed=".temp/target.sorted.bed",  # optional
     output:
         "align/{sample}.bam.target.depth",
     benchmark:
@@ -56,14 +84,17 @@ rule samtools_depth:
         ".log/align/{sample}.samtools_depth.log",
     conda:
         config["conda"]["basic"]
-    shell:
-        "samtools depth -b {input[1]} -a {input[0]} -o {output} 2> {log}"
+    params:
+        # optional bed file passed to -b
+        extra="",  # optional additional parameters as string
+    wrapper:
+        f"file:{workflow.basedir}/wrappers/samtools/depth"
 
 
 rule bam_stats:
     input:
-        rules.samtools_stat.output.all_stat,
-        rules.samtools_stat.output.target_stat,
+        rules.samtools_stats_all.output,
+        rules.samtools_stats.output,
         rules.samtools_depth.output,
     output:
         "align/{sample}.stats.csv",
@@ -96,6 +127,7 @@ rule samtools_bedcov:
     input:
         rules.bwa_mem.output,
         rules.bedtools_sort.output,
+        rules.samtools_index.output,
     output:
         "align/{sample}.bam.target.bedcov",
     benchmark:
