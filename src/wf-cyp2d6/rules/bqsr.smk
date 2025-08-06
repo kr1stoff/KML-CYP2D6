@@ -14,25 +14,36 @@
 
 rule mark_duplicates:
     input:
-        rules.bwa_mem.output
+        rules.bwa_mem.output,
     output:
         bam="align/{sample}.dedup.bam",
         metrics="align/{sample}.dedup.metrics.txt",
     benchmark:
-        ".log/align/{sample}.bwa_mem.bm"
+        ".log/align/{sample}.mark_duplicates.bm"
     log:
-        ".log/align/{sample}.bwa_mem.log",
+        ".log/align/{sample}.mark_duplicates.log",
     conda:
-        config["conda"]["basic"]
+        config["conda"]["basic2"]
     params:
-        config["params"]["picard"]["MarkDuplicates"],
+        "REMOVE_DUPLICATES=true",
     wrapper:
-        "0.74.0/bio/picard/markduplicates"
+        f"file:{workflow.basedir}/wrappers/picard/markduplicates"
+
+
+use rule samtools_index as dedup_index with:
+    input:
+        rules.mark_duplicates.output,
+    output:
+        "align/{sample}.dedup.bam.bai",
+    benchmark:
+        ".log/align/{sample}.dedup_index.bm"
+    log:
+        ".log/align/{sample}.dedup_index.log",
 
 
 rule recalibrate_base_qualities:
     input:
-        bam=get_recal_input(),
+        bam="align/{sample}.dedup.bam",
         bai=get_recal_input(bai=True),
         ref="resources/genome.fasta",
         dict="resources/genome.dict",

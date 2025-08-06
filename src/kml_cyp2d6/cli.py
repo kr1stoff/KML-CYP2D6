@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 @click.command()
 @click.option('--input-tab', required=True, help='输入样本表, 包含样本名, read1 和 read2 的路径')
 @click.option('--output-dir', default='kml-cyp2d6-result', show_default=True, help='输出文件夹')
-@click.option('--reference', required=True, help='参考基因组路径, 提前创建(BWA/Samtools)索引')
+@click.option('--reference', required=True, help='参考基因组路径, 提前创建(BWA/Samtools/Picard)索引')
 @click.option('--bed', required=True, help='BED 文件路径, 用于指定试剂盒靶区域, 基因组版本需与参考基因组一致')
 @click.option('--threads', default=8, type=int, show_default=True, help='线程数')
 @click.help_option(help='获取帮助信息')
