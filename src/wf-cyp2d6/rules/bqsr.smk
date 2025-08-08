@@ -1,17 +1,3 @@
-# rule mark_duplicates:
-#     input:
-#         "results/mapped/{sample}-{unit}.sorted.bam",
-#     output:
-#         bam=temp("results/dedup/{sample}-{unit}.bam"),
-#         metrics="results/qc/dedup/{sample}-{unit}.metrics.txt",
-#     log:
-#         "logs/picard/dedup/{sample}-{unit}.log",
-#     params:
-#         config["params"]["picard"]["MarkDuplicates"],
-#     wrapper:
-#         "0.74.0/bio/picard/markduplicates"
-
-
 rule mark_duplicates:
     input:
         rules.bwa_mem.output,
@@ -43,10 +29,10 @@ use rule samtools_index as dedup_index with:
 
 rule recalibrate_base_qualities:
     input:
-        bam="align/{sample}.dedup.bam",
-        bai=get_recal_input(bai=True),
-        ref="resources/genome.fasta",
-        dict="resources/genome.dict",
+        bam=rules.mark_duplicates.output,
+        bai=rules.output.dedup_index,
+        ref=config["database"]["reference"],
+        dict=config["database"]["dict"],
         known="resources/variation.noiupac.vcf.gz",
         known_idx="resources/variation.noiupac.vcf.gz.tbi",
     output:

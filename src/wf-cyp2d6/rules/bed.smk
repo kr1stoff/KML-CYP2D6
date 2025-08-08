@@ -1,6 +1,6 @@
 rule bedtools_sort:
     input:
-        in_file=config["bed"],
+        in_file=config["database"]["bed"],
     output:
         ".temp/target.sorted.bed",
     log:

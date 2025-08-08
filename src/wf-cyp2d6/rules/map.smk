@@ -4,7 +4,9 @@ rule bwa_mem:
             ".rawdata/{sample}_1.fastq.gz",
             ".rawdata/{sample}_2.fastq.gz",
         ],
-        idx=multiext(config["reference"], ".amb", ".ann", ".bwt", ".pac", ".sa"),
+        idx=multiext(
+            config["database"]["reference"], ".amb", ".ann", ".bwt", ".pac", ".sa"
+        ),
     output:
         "align/{sample}.bam",
     benchmark:
