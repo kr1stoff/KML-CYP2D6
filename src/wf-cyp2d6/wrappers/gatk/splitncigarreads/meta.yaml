@@ -1,0 +1,14 @@
+name: gatk SplitNCigarReads
+url: https://gatk.broadinstitute.org/hc/en-us/articles/9570487998491-SplitNCigarReads
+description: |
+  Run gatk SplitNCigarReads.
+authors:
+  - Jan Forster
+  - Filipe G. Vieira
+input:
+  - bam file
+output:
+  - split bam file
+notes: |
+  * The `java_opts` param allows for additional arguments to be passed to the java compiler, e.g. "-XX:ParallelGCThreads=10" (not for `-XmX` or `-Djava.io.tmpdir`, since they are handled automatically).
+  * The `extra` param allows for additional program arguments.

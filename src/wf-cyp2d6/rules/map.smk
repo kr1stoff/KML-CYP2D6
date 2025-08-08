@@ -16,7 +16,7 @@ rule bwa_mem:
     conda:
         config["conda"]["basic"]
     params:
-        extra=r"-M -Y -R '@RG\tID:{sample}\tSM:{sample}'",
+        extra=r"-M -Y -R '@RG\tID:{sample}\tSM:{sample}\tPL:ILLUMINA'",
         sorting="samtools",  # Can be 'none', 'samtools' or 'picard'.
         sort_order="coordinate",  # Can be 'queryname' or 'coordinate'.
         sort_extra="",  # Extra args for samtools/picard.

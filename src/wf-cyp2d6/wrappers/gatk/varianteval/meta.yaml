@@ -1,0 +1,18 @@
+name: gatk VariantEval
+url: https://gatk.broadinstitute.org/hc/en-us/articles/9570243836187-VariantEval-BETA-
+description: |
+  Run gatk VariantEval.
+authors:
+  - Filipe G. Vieira
+input:
+  - vcf files
+  - BAM/CRAM files (optional)
+  - reference genome (optional)
+  - reference dictionary (optional)
+  - vcf.gz of known variants (optional)
+  - PED (pedigree) file (optional)
+output:
+  - Evaluation tables detailing the results of the eval modules on VCF file
+notes: |
+  * The `java_opts` param allows for additional arguments to be passed to the java compiler, e.g. "-XX:ParallelGCThreads=10" (not for `-XmX` or `-Djava.io.tmpdir`, since they are handled automatically).
+  * The `extra` param allows for additional program arguments.

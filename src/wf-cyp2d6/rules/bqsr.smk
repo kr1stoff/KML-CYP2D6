@@ -1,13 +1,13 @@
 rule mark_duplicates:
     input:
-        rules.bwa_mem.output,
+        bams=rules.bwa_mem.output,
     output:
-        bam="align/{sample}.dedup.bam",
-        metrics="align/{sample}.dedup.metrics.txt",
+        bam="bqsr/{sample}.bam",
+        metrics="bqsr/{sample}.metrics.txt",
     benchmark:
-        ".log/align/{sample}.mark_duplicates.bm"
+        ".log/bqsr/{sample}.mark_duplicates.bm"
     log:
-        ".log/align/{sample}.mark_duplicates.log",
+        ".log/bqsr/{sample}.mark_duplicates.log",
     conda:
         config["conda"]["basic2"]
     params:
@@ -18,60 +18,72 @@ rule mark_duplicates:
 
 use rule samtools_index as dedup_index with:
     input:
-        rules.mark_duplicates.output,
+        rules.mark_duplicates.output.bam,
     output:
-        "align/{sample}.dedup.bam.bai",
+        "bqsr/{sample}.bam.bai",
     benchmark:
-        ".log/align/{sample}.dedup_index.bm"
+        ".log/bqsr/{sample}.dedup_index.bm"
     log:
-        ".log/align/{sample}.dedup_index.log",
+        ".log/bqsr/{sample}.dedup_index.log",
 
 
 rule recalibrate_base_qualities:
     input:
-        bam=rules.mark_duplicates.output,
-        bai=rules.output.dedup_index,
+        bam=rules.mark_duplicates.output.bam,
+        bai=rules.dedup_index.output,
         ref=config["database"]["reference"],
         dict=config["database"]["dict"],
-        known="resources/variation.noiupac.vcf.gz",
-        known_idx="resources/variation.noiupac.vcf.gz.tbi",
+        known=[
+            config["database"]["known_site_1000g"],
+            config["database"]["known_site_dbsnp"],
+            config["database"]["known_site_mills"],
+        ],
+        known_idx=[
+            config["database"]["known_site_1000g_idx"],
+            config["database"]["known_site_dbsnp_idx"],
+            config["database"]["known_site_mills_idx"],
+        ],
     output:
-        recal_table="results/recal/{sample}-{unit}.grp",
+        recal_table="bqsr/{sample}-recal.grp",
+    benchmark:
+        ".log/bqsr/{sample}.recalibrate_base_qualities.bm"
     log:
-        "logs/gatk/bqsr/{sample}-{unit}.log",
+        ".log/bqsr/{sample}.recalibrate_base_qualities.log",
+    conda:
+        config["conda"]["basic"]
     params:
-        extra=get_regions_param() + config["params"]["gatk"]["BaseRecalibrator"],
-    resources:
-        mem_mb=1024,
+        extra="--intervals " + config["database"]["bed"],
     wrapper:
-        "0.74.0/bio/gatk/baserecalibrator"
+        f"file:{workflow.basedir}/wrappers/gatk/baserecalibrator"
 
 
 rule apply_base_quality_recalibration:
     input:
-        bam=get_recal_input(),
-        bai=get_recal_input(bai=True),
-        ref="resources/genome.fasta",
-        dict="resources/genome.dict",
-        recal_table="results/recal/{sample}-{unit}.grp",
+        bam=rules.mark_duplicates.output.bam,
+        bai=rules.dedup_index.output,
+        ref=config["database"]["reference"],
+        dict=config["database"]["dict"],
+        recal_table=rules.recalibrate_base_qualities.output,
     output:
-        bam=protected("results/recal/{sample}-{unit}.bam"),
+        bam="bqsr/{sample}/recal.bam",
+    benchmark:
+        ".log/bqsr/{sample}.apply_base_quality_recalibration.bm"
     log:
-        "logs/gatk/apply-bqsr/{sample}-{unit}.log",
+        ".log/bqsr/{sample}.apply_base_quality_recalibration.log",
+    conda:
+        config["conda"]["basic"]
     params:
-        extra=get_regions_param(),
-    resources:
-        mem_mb=1024,
+        extra="--intervals " + config["database"]["bed"],
     wrapper:
-        "0.74.0/bio/gatk/applybqsr"
+        f"file:{workflow.basedir}/wrappers/gatk/applybqsr"
 
 
-rule samtools_index:
+use rule samtools_index as recal_index with:
     input:
-        "{prefix}.bam",
+        rules.apply_base_quality_recalibration.output.bam,
     output:
-        "{prefix}.bam.bai",
+        "bqsr/{sample}/recal.bam.bai",
+    benchmark:
+        ".log/bqsr/{sample}.recal_index.bm"
     log:
-        "logs/samtools/index/{prefix}.log",
-    wrapper:
-        "0.74.0/bio/samtools/index"
+        ".log/bqsr/{sample}.recal_index.log",

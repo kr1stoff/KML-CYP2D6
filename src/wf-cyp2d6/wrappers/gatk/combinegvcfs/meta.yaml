@@ -1,0 +1,15 @@
+name: gatk CombineGVCFs
+url: https://gatk.broadinstitute.org/hc/en-us/articles/9570423318427-CombineGVCFs
+description: |
+  Run gatk CombineGVCFs.
+authors:
+  - Johannes Köster
+  - Jake VanCampen
+  - Filipe G. Vieira
+input:
+  - GVCF files of multiple samples
+output:
+  - Combined GVCF
+notes: |
+  * The `java_opts` param allows for additional arguments to be passed to the java compiler, e.g. "-XX:ParallelGCThreads=10" (not for `-XmX` or `-Djava.io.tmpdir`, since they are handled automatically).
+  * The `extra` param allows for additional program arguments.
