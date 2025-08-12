@@ -2,7 +2,7 @@ rule mark_duplicates:
     input:
         bams=rules.bwa_mem.output,
     output:
-        bam="bqsr/{sample}.bam",
+        bam="bqsr/{sample}.dedup.bam",
         metrics="bqsr/{sample}.metrics.txt",
     benchmark:
         ".log/bqsr/{sample}.mark_duplicates.bm"
@@ -16,21 +16,21 @@ rule mark_duplicates:
         f"file:{workflow.basedir}/wrappers/picard/markduplicates"
 
 
-use rule samtools_index as dedup_index with:
+use rule samtools_index as mark_duplicates_index with:
     input:
         rules.mark_duplicates.output.bam,
     output:
-        "bqsr/{sample}.bam.bai",
+        "bqsr/{sample}.dedup.bam.bai",
     benchmark:
-        ".log/bqsr/{sample}.dedup_index.bm"
+        ".log/bqsr/{sample}.mark_duplicates_index.bm"
     log:
-        ".log/bqsr/{sample}.dedup_index.log",
+        ".log/bqsr/{sample}.mark_duplicates_index.log",
 
 
 rule recalibrate_base_qualities:
     input:
         bam=rules.mark_duplicates.output.bam,
-        bai=rules.dedup_index.output,
+        bai=rules.mark_duplicates_index.output,
         ref=config["database"]["reference"],
         dict=config["database"]["dict"],
         known=[
@@ -60,7 +60,7 @@ rule recalibrate_base_qualities:
 rule apply_base_quality_recalibration:
     input:
         bam=rules.mark_duplicates.output.bam,
-        bai=rules.dedup_index.output,
+        bai=rules.mark_duplicates_index.output,
         ref=config["database"]["reference"],
         dict=config["database"]["dict"],
         recal_table=rules.recalibrate_base_qualities.output,

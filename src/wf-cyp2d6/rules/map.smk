@@ -1,9 +1,6 @@
 rule bwa_mem:
     input:
-        reads=[
-            ".rawdata/{sample}_1.fastq.gz",
-            ".rawdata/{sample}_2.fastq.gz",
-        ],
+        reads=rules.fastp.output.trimmed,
         idx=multiext(
             config["database"]["reference"], ".amb", ".ann", ".bwt", ".pac", ".sa"
         ),

@@ -1,17 +1,17 @@
-rule fastp_pe:
+rule fastp:
     input:
         sample=[
             ".rawdata/{sample}_1.fastq.gz",
             ".rawdata/{sample}_2.fastq.gz",
         ],
     output:
-        trimmed=["fastp/{sample}.1.fastq", "fastp/{sample}.2.fastq"],
+        trimmed=["fastp/{sample}.1.fastq.gz", "fastp/{sample}.2.fastq.gz"],
         html="fastp/{sample}.html",
         json="fastp/{sample}.json",
     log:
-        ".logs/fastp/{sample}.fastp_pe.log",
+        ".logs/fastp/{sample}.fastp.log",
     benchmark:
-        ".log/fastp/{sample}.fastp_pe.bm"
+        ".log/fastp/{sample}.fastp.bm"
     conda:
         config["conda"]["basic2"]
     threads: config["threads"]["low"]

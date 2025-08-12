@@ -12,7 +12,6 @@ perl /data/mengxf/Software/GitHub/CoNVaDING/CoNVaDING.pl \
     -mode StartWithBam \
     -inputDir all \
     -bed probeCov.gene.bed \
-    -rmdup \
     -useSampleAsControl \
     -controlsDir controls \
     -outputDir .tmp/controls-out

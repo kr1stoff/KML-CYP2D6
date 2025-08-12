@@ -8,6 +8,7 @@ from src.kml_cyp2d6.config import get_thread_dict
 from src.config.env import CONDA_ENV_DICT
 from src.config.software import ACTIVATE
 from src.config.database import DATABASE
+from src.config.software import SOFTWARE_DICT
 
 
 def create_snakemake_configfile(input_tab: str, workdir: Path, threads: int) -> str:
@@ -21,7 +22,8 @@ def create_snakemake_configfile(input_tab: str, workdir: Path, threads: int) -> 
         'samples': samples,
         'threads': get_thread_dict(threads),
         'conda': CONDA_ENV_DICT,
-        'database': DATABASE
+        'database': DATABASE,
+        'software': SOFTWARE_DICT,
     }
     configfile = f'{workdir}/.temp/snakemake.yaml'
     with open(configfile, 'w') as f:

@@ -11,6 +11,7 @@ rule all:
         "qc/panel-qc-summary.xlsx",
         expand("align/{sample}.bam.target.bedcov", sample=config["samples"]),
         expand("bqsr/{sample}/recal.bam.bai", sample=config["samples"]),
+        expand("convading/{sample}/CreateFinalList", sample=config["samples"]),
 
 
 include: "rules/bed.smk"
@@ -19,3 +20,4 @@ include: "rules/fastp.smk"
 include: "rules/map.smk"
 include: "rules/summary.smk"
 include: "rules/bqsr.smk"
+include: "rules/convading.smk"
