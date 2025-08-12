@@ -3,8 +3,8 @@ from src.kml_cyp2d6.fastq import prepare_fastq_by_samptab
 from src.kml_cyp2d6.snakemake import create_snakemake_configfile
 
 
-input_tab = '/data/mengxf/GitHub/KML-CYP2D6/template/input2.tsv'
-output_dir = '/data/mengxf/Project/KML250731-cyp2d6-pipeline/results/250804'
+input_tab = '/data/mengxf/Project/KML250804-cyp2d6-40baseline/work/250804-input-tsv/input.pgx.tsv'
+output_dir = '/data/mengxf/Project/KML250804-cyp2d6-40baseline/results/250811'
 threads = 32
 
 
