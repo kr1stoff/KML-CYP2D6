@@ -9,7 +9,7 @@ rule fastp:
         html="fastp/{sample}.html",
         json="fastp/{sample}.json",
     log:
-        ".logs/fastp/{sample}.fastp.log",
+        ".log/fastp/{sample}.fastp.log",
     benchmark:
         ".log/fastp/{sample}.fastp.bm"
     conda:

@@ -6,9 +6,9 @@ rule all_summary:
         "qc/panel-qc-summary.tsv",
         "qc/panel-qc-summary.xlsx",
     benchmark:
-        ".log/all_summary.bm"
+        ".log/qc/all_summary.bm"
     log:
-        ".log/all_summary.log",
+        ".log/qc/all_summary.log",
     conda:
         config["conda"]["python"]
     script:

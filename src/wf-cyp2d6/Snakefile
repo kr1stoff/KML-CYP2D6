@@ -10,8 +10,8 @@ rule all:
         "multiqc",
         "qc/panel-qc-summary.xlsx",
         expand("align/{sample}.bam.target.bedcov", sample=config["samples"]),
-        expand("bqsr/{sample}/recal.bam.bai", sample=config["samples"]),
         expand("convading/{sample}/CreateFinalList", sample=config["samples"]),
+        expand("anno/{sample}.vcf", sample=config["samples"]),
 
 
 include: "rules/bed.smk"
@@ -21,3 +21,6 @@ include: "rules/map.smk"
 include: "rules/summary.smk"
 include: "rules/bqsr.smk"
 include: "rules/convading.smk"
+include: "rules/call.smk"
+include: "rules/filter.smk"
+include: "rules/anno.smk"

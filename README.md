@@ -14,3 +14,7 @@ CYP2D6 分析流程
       --bed assets/probeCov.gene.bed \
       --threads 32
   ```
+
+## 开发
+
+1. PharmCAT 分析不了, 需要自建
