@@ -16,6 +16,7 @@ perl /data/mengxf/Software/GitHub/CoNVaDING/CoNVaDING.pl \
     -outputDir GenerateTargetQcList
 """
 
+
 rule start_with_bam:
     input:
         bam=rules.apply_base_quality_recalibration.output.bam,
@@ -54,7 +55,7 @@ rule start_with_match_score:
         config["conda"]["convading"]
     params:
         # ! 质控样本数根据实际情况修改
-        "-mode StartWithMatchScore -controlSamples 36 -controlsDir "
+        "-mode StartWithMatchScore -controlSamples 30 -controlsDir "
         + config["database"]["convading_controls"],
     shell:
         """

@@ -11,8 +11,8 @@ DATABASE_HG38 = {
     'vep_cache': '/data/mengxf/Database/vep',
     'vep_plugins': '/data/mengxf/Software/GitHub/VEP_plugins-release-114',
     'bed': '/data/mengxf/GitHub/KML-CYP2D6/assets/probeCov.gene.bed',
-    'convading_controls': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-36/controls',
-    'convading_target_qc_list': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-36/targetQcList.txt',
+    'convading_controls': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/controls',
+    'convading_target_qc_list': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/targetQcList.txt',
 }
 
 # ! 确定是哪个版本数据库

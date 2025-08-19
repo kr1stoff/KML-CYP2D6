@@ -82,7 +82,7 @@ rule merge_vcfs:
             rules.gatk_filter_indels.output.vcf,
         ],
     output:
-        "filter/{sample}.filtered.vcf",
+        "filter/{sample}.merged.vcf",
     log:
         ".log/filter/{sample}.merge_vcfs.log",
     benchmark:
@@ -99,3 +99,20 @@ rule merge_vcfs:
         mem_mb=16384,
     wrapper:
         f"file:{workflow.basedir}/wrappers/picard/mergevcfs"
+
+
+rule bcftools_view:
+    input:
+        rules.merge_vcfs.output,
+    output:
+        "filter/{sample}.filtered.vcf",
+    log:
+        ".log/filter/{sample}.bcftools_view.log",
+    benchmark:
+        ".log/filter/{sample}.bcftools_view.bm"
+    conda:
+        config["conda"]["basic"]
+    params:
+        extra="-f 'PASS'",
+    wrapper:
+        f"file:{workflow.basedir}/wrappers/bcftools/view"
