@@ -11,7 +11,8 @@ rule all:
         "qc/panel-qc-summary.xlsx",
         expand("align/{sample}.bam.target.bedcov", sample=config["samples"]),
         expand("convading/{sample}/CreateFinalList", sample=config["samples"]),
-        expand("filter/{sample}.filtered.vcf", sample=config["samples"]),
+        expand("allele/{sample}.allele.txt", sample=config["samples"]),
+        expand("allele/{sample}.all.snp.detail.tsv", sample=config["samples"]),
 
 
 include: "rules/bed.smk"
@@ -23,3 +24,4 @@ include: "rules/bqsr.smk"
 include: "rules/convading.smk"
 include: "rules/call.smk"
 include: "rules/filter.smk"
+include: "rules/allele.smk"
