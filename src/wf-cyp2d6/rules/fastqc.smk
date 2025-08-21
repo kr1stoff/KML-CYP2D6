@@ -12,7 +12,7 @@ rule fastqc:
         config["conda"]["basic"]
     threads: config["threads"]["low"]
     shell:
-        "mkdir {output} && fastqc {input} -o {output} -t {threads} --extract 2> {log}"
+        "mkdir {output} && fastqc {input} -o {output} -t {threads} --extract &> {log}"
 
 
 rule multiqc:

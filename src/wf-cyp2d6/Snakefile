@@ -7,12 +7,16 @@ shell.prefix("set +eu;")
 
 rule all:
     input:
+        # qc
         "multiqc",
         "qc/panel-qc-summary.xlsx",
+        # map
         expand("align/{sample}.bam.target.bedcov", sample=config["samples"]),
+        # cnv
         expand("convading/{sample}/CreateFinalList", sample=config["samples"]),
-        expand("allele/{sample}.allele.txt", sample=config["samples"]),
-        expand("allele/{sample}.all.snp.detail.tsv", sample=config["samples"]),
+        # allele & snp
+        "allele/allele.summary.tsv",
+        expand("allele/{sample}.summary.xlsx", sample=config["samples"]),
 
 
 include: "rules/bed.smk"

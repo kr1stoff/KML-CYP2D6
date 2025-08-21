@@ -15,6 +15,14 @@ CYP2D6 分析流程
       --threads 32
   ```
 
+- 同步分析结果目录
+
+  ```bash
+  rsync -auvP --delete --exclude '**.bam' --exclude '**.gz' \
+    /data/mengxf/Project/KML250813-CYP2D6-YANZHENG/results/ \
+    /data/share/samba/public/bioinfo/KML250813-CYP2D6-YANZHENG/results/
+  ```
+
 - 同步 SAV 文件
 
     ```bash

@@ -21,9 +21,9 @@ pharmvar = pd.read_csv(snakemake.input[1], dtype=str)
 
 # * 基于样本变异合并
 outdf = pd.merge(curdf, pharmvar, on=['#CHROM', 'POS', 'REF', 'ALT'], how='left').fillna('-')
-outdf['CLEAN_ALLELE'] = outdf['ALLELE'].apply(lambda x: x.split('.')[0])
-outdf = outdf.groupby(['#CHROM', 'POS', 'ID', 'REF', 'ALT', 'DETAIL'])['CLEAN_ALLELE'].apply(lambda x: ','.join(set(x))).reset_index()
-outdf.rename(columns={'CLEAN_ALLELE': 'ALLELE'}, inplace=True)
+# outdf['CLEAN_ALLELE'] = outdf['ALLELE'].apply(lambda x: x.split('.')[0])
+# outdf = outdf.groupby(['#CHROM', 'POS', 'ID', 'REF', 'ALT', 'DETAIL'])['CLEAN_ALLELE'].apply(lambda x: ','.join(set(x))).reset_index()
+# outdf.rename(columns={'CLEAN_ALLELE': 'ALLELE'}, inplace=True)
 
 # * 输出
 outdf.to_csv(snakemake.output[0], sep='\t', index=False)

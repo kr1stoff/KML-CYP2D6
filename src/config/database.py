@@ -13,7 +13,7 @@ DATABASE_HG38 = {
     'bed': '/data/mengxf/GitHub/KML-CYP2D6/assets/probeCov.gene.bed',
     'convading_controls': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/controls',
     'convading_target_qc_list': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/targetQcList.txt',
-    'pharmvar': '/data/mengxf/GitHub/KML-CYP2D6/assets/pharmvar.csv',
+    'pharmvar': '/data/mengxf/GitHub/KML-CYP2D6/assets/pharmvar/pharmvar_reportable.csv',
     'annotation': '/data/mengxf/GitHub/KML-CYP2D6/assets/NM_000106.csv'
 }
 

@@ -45,9 +45,8 @@ rule gatk_filter_snps:
     conda:
         config["conda"]["basic"]
     params:
-        filters={
-            "snp-hard-filter": "QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0"
-        },
+        # MQRankSum < -12.5 || ReadPosRankSum < -8.0, 当前 Panel 过小, 不适合使用该参数
+        filters={"snp-hard-filter": "QD < 2.0 || FS > 60.0 || MQ < 40.0"},
         extra="",  # optional arguments, see GATK docs
         java_opts="",  # optional
     resources:
@@ -68,9 +67,8 @@ use rule gatk_filter_snps as gatk_filter_indels with:
     benchmark:
         ".log/filter/{sample}.gatk_filter_indels.bm"
     params:
-        filters={
-            "indel-hard-filter": "QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0"
-        },
+        # ReadPosRankSum < -20.0, 当前 Panel 过小, 不适合使用该参数
+        filters={"indel-hard-filter": "QD < 2.0 || FS > 200.0"},
         extra="",  # optional arguments, see GATK docs
         java_opts="",  # optional
 
