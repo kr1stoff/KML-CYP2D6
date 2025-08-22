@@ -64,6 +64,8 @@ def get_allele(curdf: pd.DataFrame, pharmvar: pd.DataFrame, key4cols: list, alle
     # 初始化数值, 如果没有变异就是 *1
     allele = 'CYP2D6_1'
     snp_allele_df = pd.DataFrame(columns=['ALLELE', 'SAMPLE-COUNT', 'PHARMVAR-COUNT', 'PRESENT'])
+    # * 删除 ALLELE 为 NA 的条目, 避免引发报错
+    merged_df = merged_df[~merged_df['ALLELE'].isna()]
     # 不是 *1 的情况
     if not merged_df.empty:
         allele_count_ser = merged_df['ALLELE'].value_counts()
