@@ -14,8 +14,8 @@ rule all:
         expand("align/{sample}.bam.target.bedcov", sample=config["samples"]),
         # cnv
         expand("convading/{sample}/CreateFinalList", sample=config["samples"]),
-        # allele & snp
-        "allele/allele.summary.tsv",
+        # TODO allele & snp
+        # "allele/allele.summary.tsv",
         expand("allele/{sample}.summary.xlsx", sample=config["samples"]),
 
 

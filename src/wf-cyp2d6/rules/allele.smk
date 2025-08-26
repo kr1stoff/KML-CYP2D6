@@ -1,7 +1,7 @@
-rule call_allele:
+rule analysis_allele_snps:
     input:
         rules.bcftools_view.output,
-        rules.start_with_best_score.output,
+        # rules.start_with_best_score.output,
         config["database"]["pharmvar"],
         config["database"]["annotation"],
     output:
@@ -9,13 +9,13 @@ rule call_allele:
         "allele/{sample}.allele.snp.detail.tsv",
         "allele/{sample}.allele.snp.stats.tsv",
     log:
-        ".log/allele/{sample}.call_allele.log",
+        ".log/allele/{sample}.analysis_allele_snps.log",
     benchmark:
-        ".log/allele/{sample}.call_allele.bm"
+        ".log/allele/{sample}.analysis_allele_snps.bm"
     conda:
         config["conda"]["python"]
     script:
-        "../scripts/call_allele.py"
+        "../scripts/analysis_allele_snps.py"
 
 
 rule all_snp_allele:
@@ -52,8 +52,8 @@ rule summary_allele:
 
 rule csv2xlsx_allele_and_all_snp:
     input:
-        rules.call_allele.output[1],
-        rules.call_allele.output[2],
+        rules.analysis_allele_snps.output[1],
+        rules.analysis_allele_snps.output[2],
         rules.all_snp_allele.output[0],
     output:
         "allele/{sample}.summary.xlsx",
