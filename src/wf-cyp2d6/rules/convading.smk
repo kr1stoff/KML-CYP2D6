@@ -107,3 +107,18 @@ rule create_final_list:
             -inputDir {input} \
             -outputDir {output} &> {log}
         """
+
+
+rule parse_cnv:
+    input:
+        rules.start_with_best_score.output,
+    output:
+        "convading/{sample}/cnv.txt",
+    benchmark:
+        ".log/convading/{sample}.parse_cnv.bm"
+    log:
+        ".log/convading/{sample}.parse_cnv.log",
+    conda:
+        config["conda"]["python"]
+    script:
+        "../scripts/parse_cnv.py"

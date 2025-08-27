@@ -16,8 +16,6 @@ def get_inputs() -> tuple:
     """
     # * 输入 SNP 和 CNV 结果文件
     vcf_file = snakemake.input[0]
-    # todo cnv 部分拆出去
-    # convading_res = snakemake.input[1] + '/recal.best.score.totallist.txt'
     # * 输入PharmVAR 和 CYP2D6 对照库
     pharmvar_df = pd.read_csv(snakemake.input[1], dtype=str)
     # 每个分型的 SNP 数量
@@ -46,30 +44,6 @@ def parse_vcf(vcf_file: str) -> pd.DataFrame:
     df['COPY'] = df['GENOTYPE'].apply(lambda x: 1 if x == '0/1' else 2)
     # 仅保留 chr22 上的变异, CYP2D6 在 chr22 上
     return df[df['#CHROM'] == 'chr22']
-
-
-# todo cnv 部分拆出去
-# def parse_cnv(convading_res: str):
-#     """
-#     解析 CNV 结果
-#     :param convading_res:
-#     :return:
-#     :cnv_type: CNV 类型
-#     :exon_number: 变异的 exon 数量
-#     :ratio: CNV 比例
-#     """
-#     df = pd.read_csv(convading_res, sep='\t', usecols=['GENE', 'AUTO_RATIO', 'ABBERATION'])
-#     cyp2d6 = df[df['GENE'] == 'CYP2D6'].reset_index(drop=True)
-#     ratio = cyp2d6['AUTO_RATIO'].mean()
-#     cnv_value_count_ser = cyp2d6[cyp2d6['ABBERATION'] != '.']['ABBERATION'].value_counts()
-#     # 野生型
-#     if len(cnv_value_count_ser) == 0:
-#         return 'WT', 0, ratio
-#     else:
-#         if cnv_value_count_ser.shape[0] > 1:
-#             return 'CNV突变类型不唯一', 0, ratio
-#         else:
-#             return cnv_value_count_ser.index[0], cnv_value_count_ser.values[0], ratio
 
 
 def get_snp_allele_df(df, pharmvar_allele_snp_count, present_threshold=0.6):
@@ -173,7 +147,6 @@ def get_allele1_allele2_present_df(curdf, pharmvar_df, key4cols, pharmvar_allele
 
 
 def main():
-    # todo cnv 部分拆出去
     vcf_file, pharmvar_df, pharmvar_allele_snp_count, nmdf = get_inputs()
     # 合并当前样本变异信息和 pharmvar_df 对应分型
     key4cols = ['#CHROM', 'POS', 'REF', 'ALT']
@@ -181,14 +154,6 @@ def main():
     #
     allele1_allele2_present_df = get_allele1_allele2_present_df(
         curdf, pharmvar_df, key4cols, pharmvar_allele_snp_count)
-
-    # todo cnv 部分拆出去
-    # CNV 结果
-    # cnv_type, exon_number, ratio = parse_cnv(convading_res)
-    # # 输出结果
-    # with open(snakemake.output[0], 'w') as f:
-    #     f.write('CNV-TYPE\tEXON-NUMBER\tCNV-RATIO\tALLELE1\tALLELE2\n')
-    #     f.write(f'{cnv_type}\t{exon_number}\t{ratio}\t{allele1}\t{allele2}\n')
 
     # * 输出 SNP 统计
     allele1_allele2_present_df.to_csv(snakemake.output[2], index=False, sep='\t')
@@ -206,7 +171,8 @@ def main():
     outdf.to_csv(snakemake.output[1], index=False, sep='\t')
     # * 输出分型结果 (不考虑 *5 的情况)
     with open(snakemake.output[0], 'w') as f:
-        f.write(f'{allele1}/{allele2}\n')
+        f.write('ALLELE1\tALLELE2\n')
+        f.write(f'{allele1}\t{allele2}\n')
 
 
 if __name__ == "__main__":
