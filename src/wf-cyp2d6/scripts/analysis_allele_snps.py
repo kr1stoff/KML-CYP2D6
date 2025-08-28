@@ -72,77 +72,66 @@ def get_snp_allele_df(df, pharmvar_allele_snp_count, present_threshold=0.6):
 def get_allele1_allele2_present_df(curdf, pharmvar_df, key4cols, pharmvar_allele_snp_count):
     # 所有备选的 allele + snp 统计
     merged_df = pd.merge(curdf, pharmvar_df, how='left', on=key4cols)
-    # 初始化数值, 如果没有变异就是 *1
+    # 删除 ALLELE 为 NA 的条目, 避免引发报错
+    merged_df = merged_df[~merged_df['ALLELE'].isna()]
     allele1_allele2_present_df = pd.DataFrame(
         columns=['ALLELE1', 'ALLELE1-PRESENT-COUNT', 'ALLELE1-PHARMVAR-COUNT',
                  'ALLELE2', 'ALLELE2-PRESENT-COUNT', 'ALLELE2-PHARMVAR-COUNT'])
-    # 删除 ALLELE 为 NA 的条目, 避免引发报错
-    merged_df = merged_df[~merged_df['ALLELE'].isna()]
-    # 不是 *1 的情况
-    if not merged_df.empty:
-        snp_allele_df = get_snp_allele_df(merged_df, pharmvar_allele_snp_count)
-        # 可能经过 present 阈值 dataframe 就空了
-        if snp_allele_df.shape[0] > 1:
-            # 枚举所有 allele1 + allele2 组合
-            # * call 第一个 allele
-            allele1_allele2_counts = []
-            for allele in snp_allele_df["ALLELE"]:
-                # 如果没有完全匹配, 则标记检测到的 SNP和 PHARMVAR 的 SNP 数量
-                cur_rec = snp_allele_df.loc[snp_allele_df['ALLELE'] == allele].iloc[0]
-                # 输出当前分型检出和 PHARMVAR 的 SNP 数量
-                present_snp_count = cur_rec['SAMPLE-COUNT']
-                pharmvar_snp_count = cur_rec['PHARMVAR-COUNT']
-                # 获取第二个 Allele 的 DataFrame
-                curdf2 = curdf.copy()
-                curdf2['KEY'] = curdf2['#CHROM'] + '-' + \
-                    curdf2['POS'].astype(str) + '-' + curdf2['REF'] + '-' + curdf2['ALT']
-                # 第一个 allele 过的 snp 拷贝 - 1
-                remove_sites = [
-                    '-'.join(r.tolist())
-                    for _, r in pharmvar_df[pharmvar_df['ALLELE'] == allele.split('(')[0]][key4cols].iterrows()
-                ]
-                curdf2.loc[curdf2['KEY'].isin(remove_sites), 'COPY'] -= 1
-                curdf2 = curdf2[curdf2['COPY'] > 0]
-                # * call 第二个 allele
-                # 初始化 present/pharmvar snp count 数值
-                allele2, present_snp_count2, pharmvar_snp_count2 = 'CYP2D6_1', 0, 0
-                merged_df2 = pd.merge(curdf2, pharmvar_df, how='left', on=key4cols)
-                # 删除 ALLELE 为 NA 的条目, 避免引发报错
-                merged_df2 = merged_df2[~merged_df2['ALLELE'].isna()]
-                # 不是 *1 的情况
-                if not merged_df2.empty:
-                    snp_allele_df2 = get_snp_allele_df(merged_df2, pharmvar_allele_snp_count)
-                    if snp_allele_df2.shape[0] > 1:
-                        allele2 = snp_allele_df2.iloc[0]["ALLELE"]
-                        # 如果没有完全匹配, 则标记检测到的 SNP和 PHARMVAR 的 SNP 数量
-                        top1record2 = snp_allele_df2.iloc[0]
-                        present_snp_count2 = top1record2['SAMPLE-COUNT']
-                        pharmvar_snp_count2 = top1record2['PHARMVAR-COUNT']
-                allele1_allele2_counts.append(
-                    [allele, present_snp_count, pharmvar_snp_count, allele2, present_snp_count2, pharmvar_snp_count2])
-            # allele1 + allele2 位点检出信息表
-            allele1_allele2_present_df = pd.DataFrame(
-                allele1_allele2_counts,
-                columns=['ALLELE1', 'ALLELE1-PRESENT-COUNT', 'ALLELE1-PHARMVAR-COUNT',
-                         'ALLELE2', 'ALLELE2-PRESENT-COUNT', 'ALLELE2-PHARMVAR-COUNT'])
-            # allele1 + allele2 位点检出数量
-            allele1_allele2_present_df['PRESENT-COUNT'] = allele1_allele2_present_df.apply(
-                lambda x: x['ALLELE1-PRESENT-COUNT'] + x['ALLELE2-PRESENT-COUNT'], axis=1)
-            # allele1 + allele2 在 PharmVar 中的 SNP 数量
-            allele1_allele2_present_df['PHARMVAR-COUNT'] = allele1_allele2_present_df.apply(
-                lambda x: x['ALLELE1-PHARMVAR-COUNT'] + x['ALLELE2-PHARMVAR-COUNT'], axis=1)
-            # allele1 + allele2 检出比例
-            allele1_allele2_present_df['PRESENT-RATIO'] = round(
-                allele1_allele2_present_df['PRESENT-COUNT'] / allele1_allele2_present_df['PHARMVAR-COUNT'], 3)
-            # 删除 allele1 和 allele2 重复组合
-            allele1_allele2_present_df['remove-key'] = [
-                set([r['ALLELE1'], r['ALLELE2']])
-                for _, r in allele1_allele2_present_df.iterrows()
-            ]
-            allele1_allele2_present_df = allele1_allele2_present_df.drop_duplicates(
-                'remove-key').drop(columns=['remove-key'])
-            allele1_allele2_present_df = allele1_allele2_present_df.sort_values(
-                by=['PRESENT-RATIO', 'PRESENT-COUNT'], ascending=[False, False]).reset_index(drop=True)
+    # 没有变异直接返回空表
+    if merged_df.empty:
+        return allele1_allele2_present_df
+    # 获取 allele snp 检出情况, 如果不满足阈值, 直接返回空表
+    snp_allele_df = get_snp_allele_df(merged_df, pharmvar_allele_snp_count)
+    if snp_allele_df.empty:
+        return allele1_allele2_present_df
+    # allele1, allele2 检出 snp 统计
+    allele1_allele2_counts = []
+    # 先建好 key 避免循环反复创建
+    curdf['KEY'] = curdf['#CHROM'] + '-' + \
+        curdf['POS'].astype(str) + '-' + curdf['REF'] + '-' + curdf['ALT']
+    # 枚举所有 allele1 + allele2 组合
+    for allele1 in snp_allele_df['ALLELE']:
+        # * call 第一个 allele
+        rec1 = snp_allele_df.loc[snp_allele_df['ALLELE'] == allele1].iloc[0]
+        persent1, pharmvar1 = rec1['SAMPLE-COUNT'], rec1['PHARMVAR-COUNT']
+        # 第一个 allele 过的 snp 拷贝 - 1
+        remove_sites = set(
+            '-'.join(r.tolist())
+            for _, r in pharmvar_df[pharmvar_df['ALLELE'] == allele1][key4cols].iterrows()
+        )
+        # * call 第二个 allele
+        curdf2 = curdf.copy()
+        curdf2.loc[curdf2['KEY'].isin(remove_sites), 'COPY'] -= 1
+        curdf2 = curdf2[curdf2['COPY'] > 0]
+        merged_df2 = pd.merge(curdf2, pharmvar_df, how='left', on=key4cols)
+        merged_df2 = merged_df2[~merged_df2['ALLELE'].isna()]
+        if not merged_df2.empty:
+            snp_allele_df2 = get_snp_allele_df(merged_df2, pharmvar_allele_snp_count)
+            if not snp_allele_df2.empty:
+                for allele2 in snp_allele_df2['ALLELE'].unique():
+                    rec2 = snp_allele_df2.loc[snp_allele_df2['ALLELE'] == allele2].iloc[0]
+                    present2, pharmvar2 = rec2['SAMPLE-COUNT'], rec2['PHARMVAR-COUNT']
+                    allele1_allele2_counts.append(
+                        [allele1, persent1, pharmvar1, allele2, present2, pharmvar2])
+                # 已添加所有 allele2, 跳过后续
+                continue
+        # 如果 allele2 没有匹配到分型, 补充默认值
+        allele1_allele2_counts.append([allele1, persent1, pharmvar1, 'CYP2D6_1', 0, 0])
+    # 汇总总表, 统计 allele1 + allele2 的 SNP 检出情况
+    df = pd.DataFrame(
+        allele1_allele2_counts,
+        columns=['ALLELE1', 'ALLELE1-PRESENT-COUNT', 'ALLELE1-PHARMVAR-COUNT',
+                 'ALLELE2', 'ALLELE2-PRESENT-COUNT', 'ALLELE2-PHARMVAR-COUNT']
+    )
+    df['PRESENT-COUNT'] = df['ALLELE1-PRESENT-COUNT'] + df['ALLELE2-PRESENT-COUNT']
+    df['PHARMVAR-COUNT'] = df['ALLELE1-PHARMVAR-COUNT'] + df['ALLELE2-PHARMVAR-COUNT']
+    df['PRESENT-RATIO'] = (df['PRESENT-COUNT'] / df['PHARMVAR-COUNT']).round(3)
+    # 删除 allele1 和 allele2 重复组合
+    df['remove-key'] = [frozenset([r['ALLELE1'], r['ALLELE2']]) for _, r in df.iterrows()]
+    df = df.drop_duplicates('remove-key').drop(columns=['remove-key'])
+    allele1_allele2_present_df = df.sort_values(
+        by=['PRESENT-RATIO', 'PRESENT-COUNT'], ascending=[False, False]
+    ).reset_index(drop=True)
     return allele1_allele2_present_df
 
 
@@ -151,11 +140,9 @@ def main():
     # 合并当前样本变异信息和 pharmvar_df 对应分型
     key4cols = ['#CHROM', 'POS', 'REF', 'ALT']
     curdf = parse_vcf(vcf_file)
-    #
+    # * 输出 allele1 和 allele2 检出 SNP 统计
     allele1_allele2_present_df = get_allele1_allele2_present_df(
         curdf, pharmvar_df, key4cols, pharmvar_allele_snp_count)
-
-    # * 输出 SNP 统计
     allele1_allele2_present_df.to_csv(snakemake.output[2], index=False, sep='\t')
     # * 输出明确分型的 SNP 明细
     allele1, allele2 = 'CYP2D6_1', 'CYP2D6_1'

@@ -14,7 +14,8 @@ DATABASE_HG38 = {
     'convading_controls': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/controls',
     'convading_target_qc_list': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/targetQcList.txt',
     'pharmvar': '/data/mengxf/GitHub/KML-CYP2D6/assets/pharmvar/pharmvar_reportable.csv',
-    'annotation': '/data/mengxf/GitHub/KML-CYP2D6/assets/NM_000106.csv'
+    'annotation': '/data/mengxf/GitHub/KML-CYP2D6/assets/NM_000106.csv',
+    'report_sites': '/data/mengxf/GitHub/KML-CYP2D6/assets/report-sites-info.csv',
 }
 
 # ! 确定是哪个版本数据库
