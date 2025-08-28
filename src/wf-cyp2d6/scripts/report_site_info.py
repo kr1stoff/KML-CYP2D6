@@ -8,7 +8,6 @@ all_snp_df = pd.read_csv(snakemake.input[0], sep='\t', usecols=['ID', 'GENOTYPE'
 resent_snp_genotype = all_snp_df.set_index('ID').to_dict()['GENOTYPE']
 # 报告位点参考
 report_site_df = pd.read_csv(snakemake.input[1])
-# 输出导入报告的结果
 # SNP
 results = []
 for it in report_site_df.itertuples():
@@ -19,5 +18,12 @@ for it in report_site_df.itertuples():
             results.append([it.ReportSiteInfo, it.HOM])
     else:
         results.append([it.ReportSiteInfo, it.WT])
-# todo CYP2D6*5 CNV
+# CYP2D6*5 CNV
+df = pd.read_csv(snakemake.input[2], sep='\t')
+cnv = df.iloc[0].to_dict()
+if (cnv['CNV-TYPE'] in ['DEL', 'DUP']) and ((cnv['CNV-RATIO'] < 0.65) or (cnv['CNV-RATIO'] > 1.4)):
+    results.append(['CYP2D6 copy number', str(round(cnv['CNV-RATIO']*2))])
+else:
+    results.append(['CYP2D6 copy number', '2'])
+# * 输出导入报告的结果
 pd.DataFrame(results, columns=['Test', 'Result']).to_csv(snakemake.output[0], index=False, sep='\t')

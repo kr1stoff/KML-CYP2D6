@@ -2,6 +2,7 @@ rule report_site_info:
     input:
         rules.analysis_allele_snps.output[1],
         config["database"]["report_sites"],
+        rules.parse_cnv.output,
     output:
         "report/{sample}.report.site.info.tsv",
     log:

@@ -16,7 +16,7 @@ perl /data/mengxf/Software/GitHub/CoNVaDING/CoNVaDING.pl \
     -outputDir GenerateTargetQcList
 """
 
-
+# TODO 流程不在更新后, 输出目录从 convading/ 改成 cnv/
 rule start_with_bam:
     input:
         bam=rules.apply_base_quality_recalibration.output.bam,
