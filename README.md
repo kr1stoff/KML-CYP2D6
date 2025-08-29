@@ -7,11 +7,9 @@ CYP2D6 分析流程
 - poetry 运行
 
   ```bash
-    poetry run python -m src.kml_cyp2d6 \
+    /home/mengxf/miniforge3/envs/python3.12/bin/python -m src.kml_cyp2d6 \
       --input-tab template/input.tsv \
       --output-dir /data/mengxf/Project/KML250731-cyp2d6-pipeline/results/250731 \
-      --reference /data/mengxf/Database/reference/hg38/hg38.fa \
-      --bed assets/probeCov.gene.bed \
       --threads 32
   ```
 
@@ -37,3 +35,8 @@ CYP2D6 分析流程
 ## 开发
 
 1. PharmCAT 分析不了, 需要自建
+2. 不使用 PharmVAR, 使用 PharmGKB 对照表生成参考库
+
+## 注意
+
+1. 不在使用 poetry, 在 snakemake 中总是影响环境, 报 numpy 和 pandas 版本冲突, 直接使用 python 解释器

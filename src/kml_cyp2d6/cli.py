@@ -14,8 +14,8 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 @click.option('--threads', default=8, type=int, show_default=True, help='线程数')
 @click.help_option(help='获取帮助信息')
 def main(input_tab, output_dir, threads):
-    """KML Panel 快速质量评估流程"""
-    logging.info("开始 KML Panel 快速质量评估流程")
+    """KML CYP2D6 分型分析流程"""
+    logging.info("开始 KML CYP2D6 分型分析流程")
     output_dir = Path(output_dir).resolve()
     # fastq
     prepare_fastq_by_samptab(output_dir, input_tab, threads)
