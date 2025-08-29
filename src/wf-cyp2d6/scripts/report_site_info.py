@@ -11,7 +11,7 @@ report_site_df = pd.read_csv(snakemake.input[1])
 # SNP
 results = []
 for it in report_site_df.itertuples():
-    if it.rsID in resent_snp_genotype:
+    if str(it.rsID) in resent_snp_genotype:
         if resent_snp_genotype == '0/1':
             results.append([it.ReportSiteInfo, it.HET])
         else:
@@ -21,9 +21,14 @@ for it in report_site_df.itertuples():
 # CYP2D6*5 CNV
 df = pd.read_csv(snakemake.input[2], sep='\t')
 cnv = df.iloc[0].to_dict()
-if (cnv['CNV-TYPE'] in ['DEL', 'DUP']) and ((cnv['CNV-RATIO'] < 0.65) or (cnv['CNV-RATIO'] > 1.4)):
+if (cnv['CNV-TYPE'] == 'DEL') and (cnv['CNV-RATIO'] < 0.65):
+    results.append(['full gene deletion', 'Positive'])
+    results.append(['CYP2D6 copy number', str(round(cnv['CNV-RATIO']*2))])
+elif (cnv['CNV-TYPE'] == 'DUP') and (cnv['CNV-RATIO'] > 1.4):
+    results.append(['full gene duplication', 'Negative'])
     results.append(['CYP2D6 copy number', str(round(cnv['CNV-RATIO']*2))])
 else:
+    results.append(['full gene duplication', 'Negative'])
     results.append(['CYP2D6 copy number', '2'])
 # * 输出导入报告的结果
 pd.DataFrame(results, columns=['Test', 'Result']).to_csv(snakemake.output[0], index=False, sep='\t')
