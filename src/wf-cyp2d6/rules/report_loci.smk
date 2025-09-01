@@ -1,23 +1,23 @@
-rule report_site_info:
+rule report_loci_info:
     input:
         rules.analysis_allele_snps.output[1],
-        config["database"]["report_sites"],
+        config["database"]["report_locus"],
         rules.parse_cnv.output,
     output:
-        "report/{sample}.report.site.info.tsv",
+        "report/{sample}.report.loci.info.tsv",
     log:
-        ".log/report/{sample}.report_site_info.log",
+        ".log/report/{sample}.report_loci_info.log",
     benchmark:
-        ".log/report/{sample}.report_site_info.bm"
+        ".log/report/{sample}.report_loci_info.bm"
     conda:
         config["conda"]["python"]
     script:
-        "../scripts/report_site_info.py"
+        "../scripts/report_loci_info.py"
 
 
 rule csv2xlsx_allele_snp:
     input:
-        rules.report_site_info.output,
+        rules.report_loci_info.output,
         rules.analysis_allele_snps.output[2],
         rules.analysis_allele_snps.output[1],
         rules.all_snp_allele.output[0],

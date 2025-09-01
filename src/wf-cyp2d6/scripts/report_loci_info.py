@@ -7,12 +7,12 @@ sys.stderr = open(snakemake.log[0], "w")
 all_snp_df = pd.read_csv(snakemake.input[0], sep='\t', usecols=['ID', 'GENOTYPE'])
 resent_snp_genotype = all_snp_df.set_index('ID').to_dict()['GENOTYPE']
 # 报告位点参考
-report_site_df = pd.read_csv(snakemake.input[1])
+report_loci_df = pd.read_csv(snakemake.input[1])
 # SNP
 results = []
-for it in report_site_df.itertuples():
+for it in report_loci_df.itertuples():
     if str(it.rsID) in resent_snp_genotype:
-        if resent_snp_genotype == '0/1':
+        if resent_snp_genotype[it.rsID] == '0/1':
             results.append([it.ReportSiteInfo, it.HET])
         else:
             results.append([it.ReportSiteInfo, it.HOM])

@@ -1,7 +1,7 @@
 rule analysis_allele_snps:
     input:
         rules.bcftools_view.output,
-        config["database"]["pharmvar"],
+        config["database"]["pharmgkb"],
         config["database"]["annotation"],
     output:
         "allele/{sample}.raw.allele.txt",
@@ -34,7 +34,7 @@ rule paste_allele_cnv:
 rule all_snp_allele:
     input:
         rules.bcftools_view.output,
-        config["database"]["pharmvar"],
+        config["database"]["pharmgkb"],
     output:
         "allele/{sample}.all.snp.detail.tsv",
     log:

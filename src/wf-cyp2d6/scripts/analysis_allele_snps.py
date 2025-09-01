@@ -116,7 +116,7 @@ def get_allele1_allele2_present_df(curdf, pharmvar_df, key4cols, pharmvar_allele
                 # 已添加所有 allele2, 跳过后续
                 continue
         # 如果 allele2 没有匹配到分型, 补充默认值
-        allele1_allele2_counts.append([allele1, persent1, pharmvar1, 'CYP2D6_1', 0, 0])
+        allele1_allele2_counts.append([allele1, persent1, pharmvar1, '1', 0, 0])
     # 汇总总表, 统计 allele1 + allele2 的 SNP 检出情况
     df = pd.DataFrame(
         allele1_allele2_counts,
@@ -145,7 +145,7 @@ def main():
         curdf, pharmvar_df, key4cols, pharmvar_allele_snp_count)
     allele1_allele2_present_df.to_csv(snakemake.output[2], index=False, sep='\t')
     # * 输出明确分型的 SNP 明细
-    allele1, allele2 = 'CYP2D6_1', 'CYP2D6_1'
+    allele1, allele2 = '1', '1'
     if len(allele1_allele2_present_df) > 0:
         allele1, allele2 = allele1_allele2_present_df.iloc[0]['ALLELE1'], allele1_allele2_present_df.iloc[0]['ALLELE2']
     merged_df = pd.merge(curdf, pharmvar_df, how='left', on=key4cols)
