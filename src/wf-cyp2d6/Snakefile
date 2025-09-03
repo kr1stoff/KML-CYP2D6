@@ -15,8 +15,11 @@ rule all:
         # cnv
         expand("convading/{sample}/CreateFinalList", sample=config["samples"]),
         # allele & snp
-        "report/allele.summary.tsv",
-        expand("report/{sample}.summary.xlsx", sample=config["samples"]),
+        # todo 测试完删除, 取消下面的注释
+        expand("allele/{sample}.allele.snp.stats.tsv", sample=config["samples"]),
+        expand("allele/{sample}.all.snp.detail.tsv", sample=config["samples"]),
+        # "report/allele.summary.tsv",
+        # expand("report/{sample}.summary.xlsx", sample=config["samples"]),
 
 
 include: "rules/bed.smk"
@@ -29,4 +32,5 @@ include: "rules/convading.smk"
 include: "rules/call.smk"
 include: "rules/filter.smk"
 include: "rules/allele.smk"
-include: "rules/report_loci.smk"
+# todo 对应修改
+# include: "rules/report_loci.smk"

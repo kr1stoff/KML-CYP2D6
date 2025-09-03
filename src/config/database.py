@@ -11,8 +11,8 @@ DATABASE_HG38 = {
     'bed': '/data/mengxf/GitHub/KML-CYP2D6/assets/probeCov.gene.bed',
     'convading_controls': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/controls',
     'convading_target_qc_list': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/targetQcList.txt',
-    # 'pharmvar': '/data/mengxf/GitHub/KML-CYP2D6/assets/pharmvar/pharmvar_reportable.csv',
-    'pharmgkb': '/data/mengxf/Database/PGx/pharmgkb/250901/pharmgkb_reportable.csv',
+    'pharmgkb': '/data/mengxf/GitHub/KML-CYP2D6/assets/pharmgkb/pharmgkb_reportable.csv',
+    'pharmgkb_locus_count': '/data/mengxf/GitHub/KML-CYP2D6/assets/pharmgkb/pharmgkb_allele_locus_count.json',
     'annotation': '/data/mengxf/GitHub/KML-CYP2D6/assets/NM_000106.csv',
     'report_locus': '/data/mengxf/GitHub/KML-CYP2D6/assets/report-locus-info.csv',
 }

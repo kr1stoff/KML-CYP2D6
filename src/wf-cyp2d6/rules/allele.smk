@@ -2,10 +2,8 @@ rule analysis_allele_snps:
     input:
         rules.bcftools_view.output,
         config["database"]["pharmgkb"],
-        config["database"]["annotation"],
+        config["database"]["pharmgkb_locus_count"],
     output:
-        "allele/{sample}.raw.allele.txt",
-        "allele/{sample}.allele.snp.detail.tsv",
         "allele/{sample}.allele.snp.stats.tsv",
     log:
         ".log/allele/{sample}.analysis_allele_snps.log",
@@ -17,10 +15,17 @@ rule analysis_allele_snps:
         "../scripts/analysis_allele_snps.py"
 
 
+# TODO 判断单拆出来
+# allele/{sample}.raw.allele.txt
+# "allele/{sample}.allele.snp.detail.tsv",
+# config["database"]["annotation"],
+
+
 rule paste_allele_cnv:
     input:
         rules.parse_cnv.output,
-        rules.analysis_allele_snps.output[0],
+        # todo rules.xxx.output
+        "allele/{sample}.raw.allele.txt",
     output:
         "allele/{sample}.allele.txt",
     log:
