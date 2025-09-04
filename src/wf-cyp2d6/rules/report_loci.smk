@@ -1,6 +1,6 @@
 rule report_loci_info:
     input:
-        rules.analysis_allele_snps.output[1],
+        rules.all_snp_allele.output,
         config["database"]["report_locus"],
         rules.parse_cnv.output,
     output:
@@ -18,9 +18,9 @@ rule report_loci_info:
 rule csv2xlsx_allele_snp:
     input:
         rules.report_loci_info.output,
-        rules.analysis_allele_snps.output[2],
-        rules.analysis_allele_snps.output[1],
-        rules.all_snp_allele.output[0],
+        rules.analysis_allele_snps.output,
+        rules.call_raw_allele.output[1],
+        rules.all_snp_allele.output,
     output:
         "report/{sample}.summary.xlsx",
     log:

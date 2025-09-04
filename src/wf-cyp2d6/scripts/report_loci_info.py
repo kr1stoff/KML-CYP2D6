@@ -5,14 +5,14 @@ sys.stderr = open(snakemake.log[0], "w")
 
 # 检出的分型 SNP 位点
 all_snp_df = pd.read_csv(snakemake.input[0], sep='\t', usecols=['ID', 'GENOTYPE'])
-resent_snp_genotype = all_snp_df.set_index('ID').to_dict()['GENOTYPE']
+present_snp_genotype = all_snp_df.set_index('ID').to_dict()['GENOTYPE']
 # 报告位点参考
 report_loci_df = pd.read_csv(snakemake.input[1])
 # SNP
 results = []
 for it in report_loci_df.itertuples():
-    if str(it.rsID) in resent_snp_genotype:
-        if resent_snp_genotype[it.rsID] == '0/1':
+    if str(it.rsID) in present_snp_genotype:
+        if present_snp_genotype[it.rsID] == '0/1':
             results.append([it.ReportSiteInfo, it.HET])
         else:
             results.append([it.ReportSiteInfo, it.HOM])
@@ -21,12 +21,12 @@ for it in report_loci_df.itertuples():
 # CYP2D6*5 CNV
 df = pd.read_csv(snakemake.input[2], sep='\t')
 cnv = df.iloc[0].to_dict()
-if (cnv['CNV-TYPE'] == 'DEL') and (cnv['CNV-RATIO'] < 0.65):
+if (cnv['CNV_TYPE'] == 'DEL') and (cnv['CNV_RATIO'] < 0.65):
     results.append(['full gene deletion', 'Positive'])
-    results.append(['CYP2D6 copy number', str(round(cnv['CNV-RATIO']*2))])
-elif (cnv['CNV-TYPE'] == 'DUP') and (cnv['CNV-RATIO'] > 1.4):
+    results.append(['CYP2D6 copy number', str(round(cnv['CNV_RATIO']*2))])
+elif (cnv['CNV_TYPE'] == 'DUP') and (cnv['CNV_RATIO'] > 1.4):
     results.append(['full gene duplication', 'Negative'])
-    results.append(['CYP2D6 copy number', str(round(cnv['CNV-RATIO']*2))])
+    results.append(['CYP2D6 copy number', str(round(cnv['CNV_RATIO']*2))])
 else:
     results.append(['full gene duplication', 'Negative'])
     results.append(['CYP2D6 copy number', '2'])

@@ -31,5 +31,5 @@ convading_res = snakemake.input[0] + '/recal.best.score.totallist.txt'
 cnv_type, exon_number, ratio = parse_cnv(convading_res)
 # 输出结果
 with open(snakemake.output[0], 'w') as f:
-    f.write('CNV-TYPE\tEXON-NUMBER\tCNV-RATIO\n')
+    f.write('CNV_TYPE\tEXON_NUMBER\tCNV_RATIO\n')
     f.write(f'{cnv_type}\t{exon_number}\t{ratio}\n')
