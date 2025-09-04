@@ -11,10 +11,11 @@ DATABASE_HG38 = {
     'bed': '/data/mengxf/GitHub/KML-CYP2D6/assets/probeCov.gene.bed',
     'convading_controls': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/controls',
     'convading_target_qc_list': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/targetQcList.txt',
-    'pharmgkb': '/data/mengxf/GitHub/KML-CYP2D6/assets/pharmgkb/pharmgkb_reportable.csv',
-    'pharmgkb_locus_count': '/data/mengxf/GitHub/KML-CYP2D6/assets/pharmgkb/pharmgkb_allele_locus_count.json',
+    'pharmgkb': '/data/mengxf/GitHub/KML-CYP2D6/assets/pharmgkb/allele_definition_table_reportable.csv',
+    'pharmgkb_locus_count': '/data/mengxf/GitHub/KML-CYP2D6/assets/pharmgkb/allele_locus_count.json',
     'annotation': '/data/mengxf/GitHub/KML-CYP2D6/assets/NM_000106.csv',
     'report_locus': '/data/mengxf/GitHub/KML-CYP2D6/assets/report-locus-info.csv',
+    'diplotype_phenotype': '/data/mengxf/GitHub/KML-CYP2D6/assets/pharmgkb/diplotype_phenotype_table.csv',
 }
 
 # ! 确定是哪个版本数据库

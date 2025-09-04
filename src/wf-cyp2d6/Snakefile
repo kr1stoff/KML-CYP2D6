@@ -15,8 +15,8 @@ rule all:
         # cnv
         expand("convading/{sample}/CreateFinalList", sample=config["samples"]),
         # allele & snp
-        "report/allele.summary.tsv",
         expand("report/{sample}.summary.xlsx", sample=config["samples"]),
+        "report/all.diplotype_phenotype.tsv",
 
 
 include: "rules/bed.smk"
@@ -29,4 +29,4 @@ include: "rules/convading.smk"
 include: "rules/call.smk"
 include: "rules/filter.smk"
 include: "rules/allele.smk"
-include: "rules/report_loci.smk"
+include: "rules/report.smk"

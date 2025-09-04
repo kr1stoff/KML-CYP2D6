@@ -21,10 +21,10 @@ for it in report_loci_df.itertuples():
 # CYP2D6*5 CNV
 df = pd.read_csv(snakemake.input[2], sep='\t')
 cnv = df.iloc[0].to_dict()
-if (cnv['CNV_TYPE'] == 'DEL') and (cnv['CNV_RATIO'] < 0.65):
+if (cnv['CNV_TYPE'] == 'DEL') and (cnv['CNV_RATIO'] < float(snakemake.params.ratio_cutoff_low)):
     results.append(['full gene deletion', 'Positive'])
     results.append(['CYP2D6 copy number', str(round(cnv['CNV_RATIO']*2))])
-elif (cnv['CNV_TYPE'] == 'DUP') and (cnv['CNV_RATIO'] > 1.4):
+elif (cnv['CNV_TYPE'] == 'DUP') and (cnv['CNV_RATIO'] > float(snakemake.params.ratio_cutoff_high)):
     results.append(['full gene duplication', 'Negative'])
     results.append(['CYP2D6 copy number', str(round(cnv['CNV_RATIO']*2))])
 else:

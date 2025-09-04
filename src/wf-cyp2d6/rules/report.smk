@@ -11,6 +11,9 @@ rule report_loci_info:
         ".log/report/{sample}.report_loci_info.bm"
     conda:
         config["conda"]["python"]
+    params:
+        ratio_cutoff_low=0.65,
+        ratio_cutoff_high=1.4,
     script:
         "../scripts/report_loci_info.py"
 
@@ -20,7 +23,6 @@ rule csv2xlsx_allele_snp:
         rules.report_loci_info.output,
         rules.analysis_allele_snps.output,
         rules.call_raw_allele.output[1],
-        rules.all_snp_allele.output,
     output:
         "report/{sample}.summary.xlsx",
     log:
@@ -39,8 +41,7 @@ rule summary_allele:
     input:
         expand("allele/{sample}.allele.txt", sample=config["samples"]),
     output:
-        "report/allele.summary.tsv",
-        "report/allele.summary.xlsx",
+        "report/all.allele.summary.tsv",
     log:
         ".log/report/summary_allele.log",
     benchmark:
@@ -49,3 +50,22 @@ rule summary_allele:
         config["conda"]["python"]
     script:
         "../scripts/summary_allele.py"
+
+
+rule summary_diplotype_phenotype:
+    input:
+        rules.summary_allele.output,
+        config['database']['diplotype_phenotype']
+    output:
+        "report/all.diplotype_phenotype.tsv",
+        "report/all.diplotype_phenotype.xlsx",
+    log:
+        ".log/report/summary_diplotype_phenotype.log",
+    benchmark:
+        ".log/report/summary_diplotype_phenotype.bm"
+    conda:
+        config["conda"]["python"]
+    params:
+        ratio_cutoff_low=0.65,
+    script:
+        "../scripts/summary_deplo_pheno.py"

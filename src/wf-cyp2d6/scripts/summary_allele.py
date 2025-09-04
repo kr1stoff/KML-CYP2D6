@@ -16,4 +16,3 @@ outdf = pd.concat(dfs, axis=0)
 outdf.sort_values('SAMPLE', inplace=True)
 
 outdf.to_csv(snakemake.output[0], sep='\t', index=False)
-outdf.to_excel(snakemake.output[1], index=False)
