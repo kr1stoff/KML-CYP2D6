@@ -1,11 +1,3 @@
-"""
-对于有简并碱基的分型, 理论位点数量固定, 简并碱基位点可以任意多
-- 统计分型中位点的数量不包含简并碱基
-- 分型时简并都替换成变异碱基
-计算 PRESENT RATIO (分型测到的位点数 / 分型中理论的位点数) 
-- 如果数值超过 1, 则取 1
-"""
-
 import pandas as pd
 from pathlib import Path
 import sys

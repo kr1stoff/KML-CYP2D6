@@ -1,7 +1,3 @@
-"""
-根据 CNV 和 allele1/allele2 推断 CYP2D6  Diplotype, 并注释出 Phenotype
-"""
-
 import pandas as pd
 import sys
 

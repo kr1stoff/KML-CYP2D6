@@ -52,10 +52,13 @@ rule summary_allele:
         "../scripts/summary_allele.py"
 
 
+# ---------------------------------------
+# 根据 CNV 和 allele1/allele2 推断 CYP2D6  Diplotype, 并注释出 Phenotype
+# ---------------------------------------
 rule summary_diplotype_phenotype:
     input:
         rules.summary_allele.output,
-        config['database']['diplotype_phenotype']
+        config["database"]["diplotype_phenotype"],
     output:
         "report/all.diplotype_phenotype.tsv",
         "report/all.diplotype_phenotype.xlsx",
