@@ -4,8 +4,13 @@ from pathlib import Path
 
 # input_tab = '/data/mengxf/Project/KML250804-cyp2d6-40baseline/input.pgx.tsv'
 # output_dir = '/data/mengxf/Project/KML250804-cyp2d6-40baseline/results/250811'
+
+# input_tab = '/data/mengxf/Project/KML250829-CYP2D6-40BASELINE-HWWKCAFX7/input.tsv'
+# output_dir = '/data/mengxf/Project/KML250829-CYP2D6-40BASELINE-HWWKCAFX7/results/250829'
+
 input_tab = '/data/mengxf/Project/KML250813-CYP2D6-YANZHENG/input/input.tsv'
 output_dir = '/data/mengxf/Project/KML250813-CYP2D6-YANZHENG/results/250819'
+
 # input_tab = '/data/mengxf/Project/KML250731-cyp2d6-pipeline/input.tsv'
 # output_dir = '/data/mengxf/Project/KML250731-cyp2d6-pipeline/results/250818'
 output_dir = Path(output_dir).resolve()

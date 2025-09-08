@@ -11,11 +11,14 @@ DATABASE_HG38 = {
     'bed': '/data/mengxf/GitHub/KML-CYP2D6/assets/probeCov.gene.bed',
     'convading_controls': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/controls',
     'convading_target_qc_list': '/data/mengxf/GitHub/KML-CYP2D6/assets/convading-30/targetQcList.txt',
-    'pharmgkb': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2D6/pharmgkb/allele_definition_table_reportable.csv',
-    'pharmgkb_locus_count': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2D6/pharmgkb/allele_locus_count.json',
+    'pharmgkb': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2D6/allele_definition_table_reportable.csv',
+    'pharmgkb_locus_count': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2D6/allele_locus_count.json',
+    'diplotype_phenotype': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2D6/diplotype_phenotype_table.csv',
     'annotation': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2D6/NM_000106.csv',
     'report_locus': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2D6/report-locus-info.csv',
-    'diplotype_phenotype': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2D6/pharmgkb/diplotype_phenotype_table.csv',
+    'c19_pharmgkb': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2C19/allele_definition_table.csv',
+    'c19_pharmgkb_locus_count': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2C19/allele_locus_count.json',
+    'c19_diplotype_phenotype': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2C19/diplotype_phenotype_table.csv',
 }
 
 # ! 确定是哪个版本数据库

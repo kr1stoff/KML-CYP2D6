@@ -6,32 +6,13 @@ import json
 sys.stderr = open(snakemake.log[0], "w")
 
 
-def get_inputs() -> tuple:
+def parse_vcf(vcf_file: str, chrom: str) -> pd.DataFrame:
     """
-    获取输入文件
-    :return:
-    :vcf: snp vcf 文件
-    :pharmgkb_df: 参考表格
-    :pharmgkb_allele_snp_count: 每个分型的标记位点数量字典
-    :nmdf: 关联 NM_000106 注释表格
+    解析 VCF 文件, 输出当前基因染色体的表格
+    :param vcf_file: VCF 文件路径
+    :param chrom: 当前基因染色体
+    :return: 当前基因染色体的表格
     """
-    # 输入 SNP 和 CNV 结果文件
-    vcf_file = snakemake.input[0]
-    # 合并当前样本变异信息和 pharmgkb_df 对应分型
-    vcf_df = parse_vcf(vcf_file)
-    # 输入 PharmGKB 和 CYP2D6 对照库
-    pharmgkb_df = pd.read_csv(snakemake.input[1], dtype=str)
-    # 分型核心 SNP 数量
-    allele_core_snp_count = pharmgkb_df[~pharmgkb_df['CORE_SNP'].isna()
-                                        ][['ALLELE']].groupby('ALLELE').value_counts().to_dict()
-    # 每个分型的 SNP 数量
-    with open(snakemake.input[2]) as f:
-        pharmgkb_allele_snp_count = json.load(f)
-    return vcf_df, pharmgkb_df, pharmgkb_allele_snp_count, allele_core_snp_count
-
-
-def parse_vcf(vcf_file: str) -> pd.DataFrame:
-    """解析 VCF 文件, 输出 chr22 的表格"""
     # ! 纯合/杂合 SNP 拷贝数量分型逻辑
     # 在 SNP 中纯合 COPY 算 2,
     # 第一轮匹配第一个 Allele 然后对应删除使用到的 SNP 一个 COPY;
@@ -47,11 +28,17 @@ def parse_vcf(vcf_file: str) -> pd.DataFrame:
     # 提取 Genotype 和 Copy 信息
     df['GENOTYPE'] = df['DETAIL'].str.split(':').str[0]
     df['COPY'] = df['GENOTYPE'].apply(lambda x: 1 if x == '0/1' else 2)
-    # 仅保留 chr22 上的变异, CYP2D6 在 chr22 上
-    return df[df['#CHROM'] == 'chr22']
+    # 仅保留当前基因染色体上的变异
+    return df[df['#CHROM'] == chrom]
 
 
-def get_snp_allele_df(df, pharmgkb_allele_snp_count, allele_core_snp_count, present_threshold=0.6) -> pd.DataFrame:
+def get_snp_allele_df(
+        df,
+        pharmgkb_allele_snp_count,
+        allele_core_snp_count,
+        default_allele='1',
+        present_threshold=0.6,
+) -> pd.DataFrame:
     """
     统计每个 allele 的 SNP 检出情况, 返回过滤后的 DataFrame
     :param df: 当前样本的 SNP 信息
@@ -65,7 +52,7 @@ def get_snp_allele_df(df, pharmgkb_allele_snp_count, allele_core_snp_count, pres
     allele_present_list = [
         [a, allele_count_ser[a], pharmgkb_allele_snp_count[a],
             allele_count_ser[a]/pharmgkb_allele_snp_count[a]]
-        if a != '1' else [a, allele_count_ser[a], 1, 1]
+        if a != default_allele else [a, allele_count_ser[a], 1, 1]
         for a in allele_count_ser.index
     ]
     snp_allele_df = pd.DataFrame(
@@ -82,7 +69,13 @@ def get_snp_allele_df(df, pharmgkb_allele_snp_count, allele_core_snp_count, pres
     return snp_allele_df[(snp_allele_df['ALLELE'].isin(core_pass_alleles)) & (snp_allele_df['PRESENT'] > present_threshold)]
 
 
-def get_allele1_allele2_present_df(vcf_df, pharmgkb_df, pharmgkb_allele_snp_count, allele_core_snp_count) -> pd.DataFrame:
+def get_allele1_allele2_present_df(
+        vcf_df,
+        pharmgkb_df,
+        pharmgkb_allele_snp_count,
+        allele_core_snp_count,
+        default_allele='1'
+) -> pd.DataFrame:
     key4cols = ['#CHROM', 'POS', 'REF', 'ALT']
     # 所有备选的 allele + snp 统计, 删除 ALLELE 为 NA 的条目, 避免引发报错
     merged_df = pd.merge(vcf_df, pharmgkb_df, how='left', on=key4cols)
@@ -95,7 +88,12 @@ def get_allele1_allele2_present_df(vcf_df, pharmgkb_df, pharmgkb_allele_snp_coun
     if merged_df.empty:
         return df
     # 获取 allele snp 检出情况, 如果不满足阈值, 直接返回空表
-    snp_allele_df = get_snp_allele_df(merged_df, pharmgkb_allele_snp_count, allele_core_snp_count)
+    snp_allele_df = get_snp_allele_df(
+        merged_df,
+        pharmgkb_allele_snp_count,
+        allele_core_snp_count,
+        default_allele
+    )
     if snp_allele_df.empty:
         return df
     # allele1, allele2 检出 snp 统计
@@ -121,7 +119,11 @@ def get_allele1_allele2_present_df(vcf_df, pharmgkb_df, pharmgkb_allele_snp_coun
         merged_df2 = merged_df2[~merged_df2['ALLELE'].isna()]
         if not merged_df2.empty:
             snp_allele_df2 = get_snp_allele_df(
-                merged_df2, pharmgkb_allele_snp_count, allele_core_snp_count)
+                merged_df2,
+                pharmgkb_allele_snp_count,
+                allele_core_snp_count,
+                default_allele
+            )
             if not snp_allele_df2.empty:
                 for allele2 in snp_allele_df2['ALLELE'].unique():
                     rec2 = snp_allele_df2.loc[snp_allele_df2['ALLELE'] == allele2].iloc[0]
@@ -131,7 +133,7 @@ def get_allele1_allele2_present_df(vcf_df, pharmgkb_df, pharmgkb_allele_snp_coun
                 # 已添加所有 allele2, 跳过后续
                 continue
         # 如果 allele2 没有匹配到分型, 补充默认值
-        allele1_allele2_counts.append([allele1, persent1, pharmgkb1, '1', 0, 0])
+        allele1_allele2_counts.append([allele1, persent1, pharmgkb1, default_allele, 0, 0])
     # 汇总总表, 统计 allele1 + allele2 的 SNP 检出情况
     return pd.DataFrame(allele1_allele2_counts, columns=out_columns)
 
@@ -165,12 +167,36 @@ def get_all_allele_present_df(indf: pd.DataFrame) -> pd.DataFrame:
 
 
 def main():
-    vcf_df, pharmgkb_df, pharmgkb_allele_snp_count, allele_core_snp_count = get_inputs()
-    # 输出 allele1 和 allele2 检出 SNP 统计
+    # * 输入
+    # 默认 allele, *1
+    default_allele = snakemake.params.get('default_allele', '1')
+    # 当前基因染色体, 默认 chr22(CYP2D6)
+    chrom = snakemake.params.get('chrom', 'chr22')
+    # SNP 和 CNV 结果文件
+    vcf_file = snakemake.input[0]
+    vcf_df = parse_vcf(vcf_file, chrom)
+    # PharmGKB 和 CYP2D6 对照库
+    pharmgkb_df = pd.read_csv(snakemake.input[1], dtype=str)
+    # 分型核心 SNP 数量
+    allele_core_snp_count = pharmgkb_df[~pharmgkb_df['CORE_SNP'].isna()
+                                        ][['ALLELE']].groupby('ALLELE').value_counts().to_dict()
+    # 每个分型理论的 SNP 数量
+    with open(snakemake.input[2]) as f:
+        pharmgkb_allele_snp_count = json.load(f)
+
+    # * 分析
+    # 统计 allele1 和 allele2 检出 SNP
     allele1_allele2_present_df = get_allele1_allele2_present_df(
-        vcf_df, pharmgkb_df, pharmgkb_allele_snp_count, allele_core_snp_count)
+        vcf_df,
+        pharmgkb_df,
+        pharmgkb_allele_snp_count,
+        allele_core_snp_count,
+        default_allele
+    )
     # 添加总 allele present 信息
     allele_present_df = get_all_allele_present_df(allele1_allele2_present_df)
+
+    # * 输出
     # 输出排序一下表头
     allele_present_df[[
         'ALLELE1', 'ALLELE2', 'PRESENT_RATIO', 'PRESENT_COUNT',

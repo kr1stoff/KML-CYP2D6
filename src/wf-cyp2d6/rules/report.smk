@@ -71,4 +71,4 @@ rule summary_diplotype_phenotype:
     params:
         ratio_cutoff_low=0.65,
     script:
-        "../scripts/summary_deplo_pheno.py"
+        "../scripts/summary_diplo_pheno.py"
