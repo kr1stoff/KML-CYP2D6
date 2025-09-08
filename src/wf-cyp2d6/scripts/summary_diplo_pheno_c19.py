@@ -9,8 +9,8 @@ df = pd.read_csv(snakemake.input[0], sep='\t')
 # deplotype phenotype 对照字典
 deplo_pheno_dict = pd.read_csv(
     snakemake.input[1],
-    usecols=['CYP2C19 Diplotype', 'Coded Diplotype/Phenotype Summary']
-).set_index('CYP2C19 Diplotype').to_dict()['Coded Diplotype/Phenotype Summary']
+    usecols=['Diplotype', 'Coded Diplotype/Phenotype Summary']
+).set_index('Diplotype').to_dict()['Coded Diplotype/Phenotype Summary']
 
 # 添加 deplotype 双倍型
 for idx, row in df.iterrows():

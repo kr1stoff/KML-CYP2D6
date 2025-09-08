@@ -20,6 +20,9 @@ rule all:
         # cyp2c19
         expand("cyp2c19/{sample}.summary.xlsx", sample=config["samples"]),
         "cyp2c19/all.diplotype_phenotype.tsv",
+        # cyp2c9
+        expand("cyp2c9/{sample}.summary.xlsx", sample=config["samples"]),
+        "cyp2c9/all.diplotype_phenotype.tsv",
 
 
 include: "rules/bed.smk"
@@ -34,3 +37,4 @@ include: "rules/filter.smk"
 include: "rules/allele.smk"
 include: "rules/report.smk"
 include: "rules/cyp2c19.smk"
+include: "rules/cyp2c9.smk"

@@ -11,7 +11,7 @@ use rule analysis_allele_snps as cyp2c19_analysis_allele_snps with:
         ".log/cyp2c19/{sample}.analysis_allele_snps.bm"
     params:
         default_allele="38",
-        chrom="chr10"
+        chrom="chr10",
 
 
 use rule all_snp_allele as cyp2c19_all_snp_allele with:
@@ -93,7 +93,7 @@ use rule summary_allele as cyp2c19_summary_allele with:
         ".log/cyp2c19/all.summary_allele.bm"
 
 
-# TODO *36 全基因缺失, *37 部分外显子缺失
+# CYP2C19 *36 全基因缺失, *37 部分外显子缺失
 rule summary_diplotype_phenotype_cyp2c19:
     input:
         rules.cyp2c19_summary_allele.output,

@@ -13,6 +13,7 @@ output_dir = '/data/mengxf/Project/KML250813-CYP2D6-YANZHENG/results/250819'
 
 # input_tab = '/data/mengxf/Project/KML250731-cyp2d6-pipeline/input.tsv'
 # output_dir = '/data/mengxf/Project/KML250731-cyp2d6-pipeline/results/250818'
+
 output_dir = Path(output_dir).resolve()
 threads = 32
 

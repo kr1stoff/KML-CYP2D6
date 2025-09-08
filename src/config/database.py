@@ -19,6 +19,9 @@ DATABASE_HG38 = {
     'c19_pharmgkb': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2C19/allele_definition_table.csv',
     'c19_pharmgkb_locus_count': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2C19/allele_locus_count.json',
     'c19_diplotype_phenotype': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2C19/diplotype_phenotype_table.csv',
+    'c9_pharmgkb': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2C9/allele_definition_table.csv',
+    'c9_pharmgkb_locus_count': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2C9/allele_locus_count.json',
+    'c9_diplotype_phenotype': '/data/mengxf/GitHub/KML-CYP2D6/assets/CYP2C9/diplotype_phenotype_table.csv',
 }
 
 # ! 确定是哪个版本数据库
