@@ -103,7 +103,7 @@ rule bcftools_view:
     input:
         rules.merge_vcfs.output,
     output:
-        "filter/{sample}.filtered.vcf",
+        "filter/{sample}.pass.vcf",
     log:
         ".log/filter/{sample}.bcftools_view.log",
     benchmark:
@@ -111,6 +111,62 @@ rule bcftools_view:
     conda:
         config["conda"]["basic"]
     params:
+        # 仅保留通过的变异
         extra="-f 'PASS'",
     wrapper:
         f"file:{workflow.basedir}/wrappers/bcftools/view"
+
+
+# ---------------------------------------
+# VAF 变异等位基因频率过滤
+# - HOM: VAF > 0.9
+# - HET: 0.25 < VAF < 0.75
+# ---------------------------------------
+rule bcftools_filter_het:
+    input:
+        rules.bcftools_view.output,
+    output:
+        "filter/{sample}.het_vaf_filter.vcf",
+    log:
+        ".log/filter/{sample}.het_vaf_filter.log",
+    benchmark:
+        ".log/filter/{sample}.het_vaf_filter.bm"
+    conda:
+        config["conda"]["basic"]
+    params:
+        filter="-i 'GT=\"0/1\" && (FORMAT/AD[*:1] / FORMAT/DP > 0.25) && (FORMAT/AD[*:1] / FORMAT/DP < 0.75)'",
+        extra="",
+    wrapper:
+        f"file:{workflow.basedir}/wrappers/bcftools/filter"
+
+
+rule bcftools_filter_hom:
+    input:
+        rules.bcftools_view.output,
+    output:
+        "filter/{sample}.hom_vaf_filter.vcf",
+    log:
+        ".log/filter/{sample}.hom_vaf_filter.log",
+    benchmark:
+        ".log/filter/{sample}.hom_vaf_filter.bm"
+    conda:
+        config["conda"]["basic"]
+    params:
+        filter="-i 'GT=\"1/1\" && (FORMAT/AD[*:1] / FORMAT/DP > 0.9)'",
+        extra="",
+    wrapper:
+        f"file:{workflow.basedir}/wrappers/bcftools/filter"
+
+
+use rule merge_vcfs as merge_het_hom_filter_vcfs with:
+    input:
+        vcfs=[
+            rules.bcftools_filter_het.output,
+            rules.bcftools_filter_hom.output,
+        ],
+    output:
+        "filter/{sample}.filtered.vcf",
+    log:
+        ".log/filter/{sample}.merge_het_hom_filter_vcfs.log",
+    benchmark:
+        ".log/filter/{sample}.merge_het_hom_filter_vcfs.bm"

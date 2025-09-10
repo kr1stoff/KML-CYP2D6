@@ -7,7 +7,7 @@
 # ---------------------------------------
 rule analysis_allele_snps:
     input:
-        rules.bcftools_view.output,
+        rules.merge_het_hom_filter_vcfs.output,
         config["database"]["pharmgkb"],
         config["database"]["pharmgkb_locus_count"],
     output:
@@ -24,7 +24,7 @@ rule analysis_allele_snps:
 
 rule all_snp_allele:
     input:
-        rules.bcftools_view.output,
+        rules.merge_het_hom_filter_vcfs.output,
         config["database"]["pharmgkb"],
     output:
         "allele/{sample}.all.snp.detail.tsv",

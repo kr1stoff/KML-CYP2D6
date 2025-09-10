@@ -16,6 +16,8 @@ def call_allele(allele_snp_df) -> tuple:
     # * 输入的应该是排过序的
     allele1, allele2 = allele_snp_df.iloc[0]['ALLELE1'], allele_snp_df.iloc[0]['ALLELE2']
     # 判断最优组合是否非唯一
+    allele_snp_df['PRESENT_RATIO'] = allele_snp_df['PRESENT_RATIO'].astype(float)
+    allele_snp_df['PRESENT_COUNT'] = allele_snp_df['PRESENT_COUNT'].astype(int)
     top_ratio = allele_snp_df['PRESENT_RATIO'].max()
     top_count = allele_snp_df['PRESENT_COUNT'].max()
     if len(allele_snp_df[(allele_snp_df['PRESENT_RATIO'] == top_ratio)

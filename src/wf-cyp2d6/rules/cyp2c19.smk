@@ -1,6 +1,6 @@
 use rule analysis_allele_snps as cyp2c19_analysis_allele_snps with:
     input:
-        rules.bcftools_view.output,
+        rules.merge_het_hom_filter_vcfs.output,
         config["database"]["c19_pharmgkb"],
         config["database"]["c19_pharmgkb_locus_count"],
     output:
@@ -16,7 +16,7 @@ use rule analysis_allele_snps as cyp2c19_analysis_allele_snps with:
 
 use rule all_snp_allele as cyp2c19_all_snp_allele with:
     input:
-        rules.bcftools_view.output,
+        rules.merge_het_hom_filter_vcfs.output,
         config["database"]["c19_pharmgkb"],
     output:
         "cyp2c19/{sample}.all.snp.detail.tsv",
