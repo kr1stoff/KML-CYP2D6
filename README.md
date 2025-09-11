@@ -1,5 +1,11 @@
 # KML-CYP2D6
 
+![GitHub followers](https://img.shields.io/github/followers/kr1stoff)
+![GitHub Created At](https://img.shields.io/github/created-at/kr1stoff/KML-CYP2D6)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/kr1stoff/KML-CYP2D6)
+![GitHub Release](https://img.shields.io/github/v/release/kr1stoff/KML-CYP2D6)
+![GitHub License](https://img.shields.io/github/license/kr1stoff/KML-CYP2D6)
+
 CYP2D6 分析流程
 
 ## 开发
