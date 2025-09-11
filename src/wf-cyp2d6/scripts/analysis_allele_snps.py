@@ -172,7 +172,7 @@ def main():
     default_allele = snakemake.params.get('default_allele', '1')
     # 当前基因染色体, 默认 chr22(CYP2D6)
     chrom = snakemake.params.get('chrom', 'chr22')
-    # SNP 和 CNV 结果文件
+    # SNP 结果文件
     vcf_file = snakemake.input[0]
     vcf_df = parse_vcf(vcf_file, chrom)
     # PharmGKB 和 CYP2D6 对照库
