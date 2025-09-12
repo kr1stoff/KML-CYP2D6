@@ -7,6 +7,7 @@
 ![GitHub License](https://img.shields.io/github/license/kr1stoff/KML-CYP2D6)
 
 CYP2D6 分析流程
+![CYP2D6](CYP2D6.drawio.png)
 
 ## 开发
 
