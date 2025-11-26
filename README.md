@@ -48,6 +48,12 @@ CYP2D6 分析流程
       /data/share/samba/public/bioinfo/KML250709-lvis-jiance-run1-2/250707_NB501947_0941_AHKKYYBGXW/
     ```
 
+  - 自动格式化 snakemake 脚本
+
+    ```bash
+    mamba -n snakemake run snakefmt src/wf-cyp2d6
+    ```
+
 ## 更新
 
 ## 注意
