@@ -2,6 +2,7 @@ import click
 import logging
 from pathlib import Path
 
+from src.kml_cyp2d6.system import get_default_threads
 from src.kml_cyp2d6.fastq import prepare_fastq_by_samptab
 from src.kml_cyp2d6.snakemake import run_snakemake
 from src.kml_cyp2d6 import __version__
@@ -12,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 @click.command()
 @click.option('--input-tab', required=True, help='输入样本表, 包含样本名, read1 和 read2 的路径')
 @click.option('--output-dir', default='kml-cyp2d6-result', show_default=True, help='输出文件夹')
-@click.option('--threads', default=8, type=int, show_default=True, help='线程数')
+@click.option('--threads', default=get_default_threads(), type=int, show_default=True, help='线程数')
 @click.version_option(version=__version__, message='KML CYP2D6 Version: %(version)s', help='显示版本信息')
 @click.help_option(help='获取帮助信息')
 def main(input_tab, output_dir, threads):
