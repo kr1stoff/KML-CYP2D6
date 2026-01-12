@@ -23,10 +23,7 @@ CYP2D6 分析流程
 - 分析
 
   ```bash
-    /home/mengxf/miniforge3/envs/python3.12/bin/python -m src.kml_cyp2d6 \
-      --input-tab template/input.tsv \
-      --output-dir /data/mengxf/Project/KML250731-cyp2d6-pipeline/results/250731 \
-      --threads 32
+    ~/miniforge3/envs/python3.12/bin/python -m src.kml_cyp2d6 --input-tab template/input.tsv --output-dir /data/mengxf/Project/KML250731-cyp2d6-pipeline/results/250731 --threads 32
   ```
 
 - 同步分析结果目录

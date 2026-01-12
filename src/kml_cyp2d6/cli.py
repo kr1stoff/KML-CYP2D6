@@ -19,9 +19,11 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 def main(input_tab, output_dir, threads):
     """KML CYP2D6 分型分析流程"""
     logging.info("开始 KML CYP2D6 分型分析流程")
+
     output_dir = Path(output_dir).resolve()
     # fastq
     prepare_fastq_by_samptab(output_dir, input_tab, threads)
     # snakemake
     run_snakemake(input_tab, output_dir, threads)
+
     logging.info("KML CYP2D6 分型分析流程完成")
