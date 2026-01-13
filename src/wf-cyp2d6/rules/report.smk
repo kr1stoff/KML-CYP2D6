@@ -4,11 +4,11 @@ rule report_loci_info:
         config["database"]["report_locus"],
         rules.parse_cnv.output,
     output:
-        "report/{sample}.report.loci.info.tsv",
+        "upload/{sample}.report.loci.info.tsv",
     log:
-        ".log/report/{sample}.report_loci_info.log",
+        ".log/upload/{sample}.report_loci_info.log",
     benchmark:
-        ".log/report/{sample}.report_loci_info.bm"
+        ".log/upload/{sample}.report_loci_info.bm"
     conda:
         config["conda"]["python"]
     params:
@@ -24,11 +24,11 @@ rule csv2xlsx_allele_snp:
         rules.analysis_allele_snps.output,
         rules.call_raw_allele.output[1],
     output:
-        "report/{sample}.summary.xlsx",
+        "upload/{sample}.summary.xlsx",
     log:
-        ".log/report/{sample}.csv2xlsx_allele_and_all_snp.log",
+        ".log/upload/{sample}.csv2xlsx_allele_and_all_snp.log",
     benchmark:
-        ".log/report/{sample}.csv2xlsx_allele_and_all_snp.bm"
+        ".log/upload/{sample}.csv2xlsx_allele_and_all_snp.bm"
     conda:
         config["conda"]["basic"]
     params:
@@ -41,11 +41,11 @@ rule summary_allele:
     input:
         expand("allele/{sample}.allele.txt", sample=config["samples"]),
     output:
-        "report/all.allele.summary.tsv",
+        "upload/all.allele.summary.tsv",
     log:
-        ".log/report/summary_allele.log",
+        ".log/upload/summary_allele.log",
     benchmark:
-        ".log/report/summary_allele.bm"
+        ".log/upload/summary_allele.bm"
     conda:
         config["conda"]["python"]
     script:
@@ -60,12 +60,12 @@ rule summary_diplotype_phenotype:
         rules.summary_allele.output,
         config["database"]["diplotype_phenotype"],
     output:
-        "report/all.diplotype_phenotype.tsv",
-        "report/all.diplotype_phenotype.xlsx",
+        "upload/all.diplotype_phenotype.tsv",
+        "upload/all.diplotype_phenotype.xlsx",
     log:
-        ".log/report/summary_diplotype_phenotype.log",
+        ".log/upload/summary_diplotype_phenotype.log",
     benchmark:
-        ".log/report/summary_diplotype_phenotype.bm"
+        ".log/upload/summary_diplotype_phenotype.bm"
     conda:
         config["conda"]["python"]
     params:

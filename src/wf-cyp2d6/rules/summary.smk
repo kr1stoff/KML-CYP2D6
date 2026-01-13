@@ -3,12 +3,12 @@ rule all_summary:
         rules.fq_stats_summary.output,
         rules.bam_stats_summary.output,
     output:
-        "qc/panel-qc-summary.tsv",
-        "qc/panel-qc-summary.xlsx",
+        "upload/panel-qc-summary.tsv",
+        "upload/panel-qc-summary.xlsx",
     benchmark:
-        ".log/qc/all_summary.bm"
+        ".log/upload/all_summary.bm"
     log:
-        ".log/qc/all_summary.log",
+        ".log/upload/all_summary.log",
     conda:
         config["conda"]["python"]
     script:
