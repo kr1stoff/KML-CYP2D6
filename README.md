@@ -19,6 +19,8 @@ CYP2D6 分析流程
     - C19\*37 为 C19 基因缺失部分外显子
 
 ## 命令行
+- 🚩原始BCL数据拆分+生成 input.tsv  
+  和浩博 HBV 项目一致, 使用 `KML-AutoAnalyzer` 和 `KML-CommonTools` 中命令操作, 并记录日志
 
 - 分析
 
